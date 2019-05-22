@@ -82,6 +82,8 @@ func (s *Scanner) NextToken() *token.Token {
 			return s.newToken(token.PLUS)
 		} else if r == '*' {
 			return s.newToken(token.MUL)
+		} else if r == '/' {
+			return s.newToken(token.DIV)
 		} else if r == '(' {
 			return s.newToken(token.LPAR)
 		} else if r == ')' {

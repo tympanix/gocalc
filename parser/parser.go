@@ -73,10 +73,19 @@ func (p *Parser) parsePlus() ast.Node {
 func (p *Parser) parseMul() ast.Node {
 	lhs := p.parsePow()
 
-	for p.have(token.MUL) {
-		lhs = ast.MulOp{
-			Lhs: lhs,
-			Rhs: p.parsePow(),
+	for {
+		if p.have(token.MUL) {
+			lhs = ast.MulOp{
+				Lhs: lhs,
+				Rhs: p.parsePow(),
+			}
+		} else if p.have(token.DIV) {
+			lhs = ast.DivOp{
+				Lhs: lhs,
+				Rhs: p.parsePow(),
+			}
+		} else {
+			break
 		}
 	}
 	return lhs

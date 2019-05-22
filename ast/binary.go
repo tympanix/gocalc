@@ -45,6 +45,23 @@ func (p MulOp) Print() {
 	debug.Outdent()
 }
 
+// DivOp represents an multiplication of integers
+type DivOp binaryExpression
+
+// Calc returns the multiplication of the two operands
+func (p DivOp) Calc() int {
+	return p.Lhs.Calc() / p.Rhs.Calc()
+}
+
+// Print prints the multiplcation to the screen
+func (p DivOp) Print() {
+	debug.Println("DivOp(*)")
+	debug.Indent()
+	p.Lhs.Print()
+	p.Rhs.Print()
+	debug.Outdent()
+}
+
 // PowOp represents an multiplication of integers
 type PowOp binaryExpression
 

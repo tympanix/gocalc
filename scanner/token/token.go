@@ -32,6 +32,7 @@ const (
 	INT
 	PLUS
 	MUL
+	DIV
 	POW
 	LPAR
 	RPAR
