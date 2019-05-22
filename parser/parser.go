@@ -12,13 +12,8 @@ import (
 // Parser parses the input program from a scanner
 type Parser struct {
 	s      *scanner.Scanner
-	tokens []tokenEntry
-	last   tokenEntry
-}
-
-type tokenEntry struct {
-	token token.Token
-	str   string
+	tokens []*token.Token
+	last   *token.Token
 }
 
 // New return a new parser
@@ -26,38 +21,32 @@ func New(s *scanner.Scanner) *Parser {
 	return &Parser{s: s}
 }
 
-func (p *Parser) have(t token.Token) bool {
+func (p *Parser) have(t token.Kind) bool {
 	if len(p.tokens) == 0 {
-		next, str := p.s.NextToken()
-		e := tokenEntry{
-			token: next,
-			str:   str,
-		}
-		p.tokens = append(p.tokens, e)
-
-		p.last = e
+		next := p.s.NextToken()
+		p.tokens = append(p.tokens, next)
+		p.last = next
 	}
 
 	e := p.tokens[0]
 
-	if e.token == t {
+	if e.Kind() == t {
 		p.tokens = p.tokens[1:]
 	}
 
-	return e.token == t
+	return e.Kind() == t
 
 }
 
-func (p *Parser) expect(t token.Token) (token.Token, string) {
+func (p *Parser) expect(t token.Kind) *token.Token {
 	if !p.have(t) {
 		log.Fatal("Unexpected token")
 	}
 	return p.get()
 }
 
-func (p *Parser) get() (token.Token, string) {
-	e := p.last
-	return e.token, e.str
+func (p *Parser) get() *token.Token {
+	return p.last
 }
 
 // ParseProgram parses the program
@@ -107,8 +96,8 @@ func (p *Parser) parsePow() ast.Node {
 
 func (p *Parser) parseInteger() ast.Node {
 	if p.have(token.INT) {
-		_, str := p.get()
-		i, err := strconv.Atoi(str)
+		t := p.get()
+		i, err := strconv.Atoi(t.String())
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -3,6 +3,7 @@ package scanner
 import (
 	"bufio"
 	"bytes"
+	"log"
 	"os"
 	"unicode"
 
@@ -58,8 +59,12 @@ func (s *Scanner) get() string {
 	return str
 }
 
+func (s *Scanner) newToken(kind token.Kind) *token.Token {
+	return token.New(kind, s.get())
+}
+
 // NextToken retrieves the next token from the scanner
-func (s *Scanner) NextToken() (token.Token, string) {
+func (s *Scanner) NextToken() *token.Token {
 
 	for {
 		for unicode.IsSpace(s.peek()) {
@@ -68,25 +73,25 @@ func (s *Scanner) NextToken() (token.Token, string) {
 
 		r := s.next()
 
-		if unicode.IsSpace(r) {
-			continue
-		} else if unicode.IsNumber(r) {
+		if unicode.IsNumber(r) {
 			for unicode.IsNumber(s.peek()) {
 				r = s.next()
 			}
-			return token.INT, s.get()
+			return s.newToken(token.INT)
 		} else if r == '+' {
-			return token.PLUS, s.get()
+			return s.newToken(token.PLUS)
 		} else if r == '*' {
-			return token.MUL, s.get()
+			return s.newToken(token.MUL)
 		} else if r == '(' {
-			return token.LPAR, s.get()
+			return s.newToken(token.LPAR)
 		} else if r == ')' {
-			return token.RPAR, s.get()
+			return s.newToken(token.RPAR)
 		} else if r == '^' {
-			return token.POW, s.get()
+			return s.newToken(token.POW)
 		} else if r == 0 {
-			return token.EOF, ""
+			return s.newToken(token.EOF)
+		} else {
+			log.Fatalf("Unknown token %c\n", r)
 		}
 
 	}
