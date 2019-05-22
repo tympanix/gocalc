@@ -1,8 +1,9 @@
 package ast
 
 import (
-	"fmt"
 	"math"
+
+	"github.com/tympanix/tymlang/debug"
 )
 
 type binaryExpression struct {
@@ -20,9 +21,11 @@ func (p PlusOp) Calc() int {
 
 // Print prints the addition opeator to the screen
 func (p PlusOp) Print() {
-	fmt.Println("PlusOp")
+	debug.Println("PlusOp(+)")
+	debug.Indent()
 	p.Lhs.Print()
 	p.Rhs.Print()
+	debug.Outdent()
 }
 
 // MulOp represents an multiplication of integers
@@ -35,9 +38,11 @@ func (p MulOp) Calc() int {
 
 // Print prints the multiplcation to the screen
 func (p MulOp) Print() {
-	fmt.Println("MulOp")
+	debug.Println("MulOp(*)")
+	debug.Indent()
 	p.Lhs.Print()
 	p.Rhs.Print()
+	debug.Outdent()
 }
 
 // PowOp represents an multiplication of integers
@@ -50,7 +55,9 @@ func (p PowOp) Calc() int {
 
 // Print prints the multiplcation to the screen
 func (p PowOp) Print() {
-	fmt.Println("PowOp")
+	debug.Println("PowOp(^)")
+	debug.Indent()
 	p.Lhs.Print()
 	p.Rhs.Print()
+	debug.Outdent()
 }

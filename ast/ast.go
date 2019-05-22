@@ -1,6 +1,6 @@
 package ast
 
-import "fmt"
+import "github.com/tympanix/tymlang/debug"
 
 // Node represents a node in the abstract syntax tree
 type Node interface {
@@ -18,5 +18,5 @@ func (i IntLiteral) Calc() int {
 
 // Print displays the integer literal on the screen
 func (i IntLiteral) Print() {
-	fmt.Println(i)
+	debug.Println(i)
 }
