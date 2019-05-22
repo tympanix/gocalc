@@ -1,3 +1,5 @@
+//go:generate stringer -type Kind
+
 package token
 
 // New returns a new token with given type and textual represenetation

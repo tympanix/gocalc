@@ -40,7 +40,7 @@ func (p *Parser) have(t token.Kind) bool {
 
 func (p *Parser) expect(t token.Kind) *token.Token {
 	if !p.have(t) {
-		log.Fatal("Unexpected token")
+		log.Fatalf("Expected token: %s\n", t.String())
 	}
 	return p.get()
 }
@@ -116,6 +116,6 @@ func (p *Parser) parseInteger() ast.Node {
 		p.expect(token.RPAR)
 		return exp
 	}
-	log.Fatal("Unexpected token")
+	log.Fatalf("Unexpected token: %s\n", p.get().String())
 	return nil
 }
