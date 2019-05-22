@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/tympanix/tymlang/parser"
-	"github.com/tympanix/tymlang/scanner"
+	"github.com/tympanix/gocalc/parser"
+	"github.com/tympanix/gocalc/scanner"
 )
 
 func main() {

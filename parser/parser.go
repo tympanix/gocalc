@@ -4,9 +4,9 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/tympanix/tymlang/ast"
-	"github.com/tympanix/tymlang/scanner"
-	"github.com/tympanix/tymlang/scanner/token"
+	"github.com/tympanix/gocalc/ast"
+	"github.com/tympanix/gocalc/scanner"
+	"github.com/tympanix/gocalc/scanner/token"
 )
 
 // Parser parses the input program from a scanner

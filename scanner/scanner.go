@@ -7,7 +7,7 @@ import (
 	"os"
 	"unicode"
 
-	"github.com/tympanix/tymlang/scanner/token"
+	"github.com/tympanix/gocalc/scanner/token"
 )
 
 // Scanner is able to scan input files

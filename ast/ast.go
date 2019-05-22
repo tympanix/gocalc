@@ -1,6 +1,6 @@
 package ast
 
-import "github.com/tympanix/tymlang/debug"
+import "github.com/tympanix/gocalc/debug"
 
 // Node represents a node in the abstract syntax tree
 type Node interface {

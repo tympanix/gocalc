@@ -3,7 +3,7 @@ package ast
 import (
 	"math"
 
-	"github.com/tympanix/tymlang/debug"
+	"github.com/tympanix/gocalc/debug"
 )
 
 type binaryExpression struct {
