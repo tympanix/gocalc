@@ -8,4 +8,6 @@ const (
 	IDENT
 	PLUS
 	MUL
+	LPAR
+	RPAR
 )

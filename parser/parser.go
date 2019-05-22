@@ -61,6 +61,10 @@ func (p *Parser) get() (scanner.Token, string) {
 
 // ParseProgram parses the program
 func (p *Parser) ParseProgram() ast.AST {
+	return p.parseExpression()
+}
+
+func (p *Parser) parseExpression() ast.AST {
 	return p.parsePlus()
 }
 
@@ -89,10 +93,18 @@ func (p *Parser) parseMul() ast.AST {
 }
 
 func (p *Parser) parseInteger() ast.AST {
-	_, str := p.expect(scanner.IDENT)
-	i, err := strconv.Atoi(str)
-	if err != nil {
-		log.Fatal(err)
+	if p.have(scanner.IDENT) {
+		_, str := p.get()
+		i, err := strconv.Atoi(str)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return ast.IntLiteral(i)
+	} else if p.have(scanner.LPAR) {
+		exp := p.parseExpression()
+		p.expect(scanner.RPAR)
+		return exp
 	}
-	return ast.IntLiteral(i)
+	log.Fatal("Unexpected token")
+	return nil
 }

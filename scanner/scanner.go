@@ -77,6 +77,10 @@ func (s *Scanner) NextToken() (Token, string) {
 			return PLUS, s.get()
 		} else if r == '*' {
 			return MUL, s.get()
+		} else if r == '(' {
+			return LPAR, s.get()
+		} else if r == ')' {
+			return RPAR, s.get()
 		} else if r == 0 {
 			return EOF, ""
 		}
