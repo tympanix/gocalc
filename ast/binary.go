@@ -1,6 +1,9 @@
 package ast
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 type binaryExpression struct {
 	Lhs Node
@@ -33,6 +36,21 @@ func (p MulOp) Calc() int {
 // Print prints the multiplcation to the screen
 func (p MulOp) Print() {
 	fmt.Println("MulOp")
+	p.Lhs.Print()
+	p.Rhs.Print()
+}
+
+// PowOp represents an multiplication of integers
+type PowOp binaryExpression
+
+// Calc returns the multiplication of the two operands
+func (p PowOp) Calc() int {
+	return int(math.Pow(float64(p.Lhs.Calc()), float64(p.Rhs.Calc())))
+}
+
+// Print prints the multiplcation to the screen
+func (p PowOp) Print() {
+	fmt.Println("PowOp")
 	p.Lhs.Print()
 	p.Rhs.Print()
 }

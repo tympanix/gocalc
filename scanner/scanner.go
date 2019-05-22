@@ -81,6 +81,8 @@ func (s *Scanner) NextToken() (Token, string) {
 			return LPAR, s.get()
 		} else if r == ')' {
 			return RPAR, s.get()
+		} else if r == '^' {
+			return POW, s.get()
 		} else if r == 0 {
 			return EOF, ""
 		}

@@ -8,6 +8,7 @@ const (
 	INT
 	PLUS
 	MUL
+	POW
 	LPAR
 	RPAR
 )

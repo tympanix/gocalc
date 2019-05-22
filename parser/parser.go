@@ -81,10 +81,22 @@ func (p *Parser) parsePlus() ast.Node {
 }
 
 func (p *Parser) parseMul() ast.Node {
-	lhs := p.parseInteger()
+	lhs := p.parsePow()
 
 	for p.have(scanner.MUL) {
 		lhs = ast.MulOp{
+			Lhs: lhs,
+			Rhs: p.parsePow(),
+		}
+	}
+	return lhs
+}
+
+func (p *Parser) parsePow() ast.Node {
+	lhs := p.parseInteger()
+
+	for p.have(scanner.POW) {
+		lhs = ast.PowOp{
 			Lhs: lhs,
 			Rhs: p.parseInteger(),
 		}
