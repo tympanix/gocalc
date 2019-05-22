@@ -60,15 +60,15 @@ func (p *Parser) get() (scanner.Token, string) {
 }
 
 // ParseProgram parses the program
-func (p *Parser) ParseProgram() ast.AST {
+func (p *Parser) ParseProgram() ast.Node {
 	return p.parseExpression()
 }
 
-func (p *Parser) parseExpression() ast.AST {
+func (p *Parser) parseExpression() ast.Node {
 	return p.parsePlus()
 }
 
-func (p *Parser) parsePlus() ast.AST {
+func (p *Parser) parsePlus() ast.Node {
 	lhs := p.parseMul()
 
 	for p.have(scanner.PLUS) {
@@ -80,7 +80,7 @@ func (p *Parser) parsePlus() ast.AST {
 	return lhs
 }
 
-func (p *Parser) parseMul() ast.AST {
+func (p *Parser) parseMul() ast.Node {
 	lhs := p.parseInteger()
 
 	for p.have(scanner.MUL) {
@@ -92,7 +92,7 @@ func (p *Parser) parseMul() ast.AST {
 	return lhs
 }
 
-func (p *Parser) parseInteger() ast.AST {
+func (p *Parser) parseInteger() ast.Node {
 	if p.have(scanner.IDENT) {
 		_, str := p.get()
 		i, err := strconv.Atoi(str)

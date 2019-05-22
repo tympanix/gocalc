@@ -3,8 +3,8 @@ package ast
 import "fmt"
 
 type binaryExpression struct {
-	Lhs AST
-	Rhs AST
+	Lhs Node
+	Rhs Node
 }
 
 // PlusOp represents an addition of integers

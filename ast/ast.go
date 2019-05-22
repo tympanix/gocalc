@@ -2,13 +2,13 @@ package ast
 
 import "fmt"
 
-// AST represents a node in the abstract syntax tree
-type AST interface {
+// Node represents a node in the abstract syntax tree
+type Node interface {
 	Calc() int
 	Print()
 }
 
-// IntLiteral is an AST node for integer literals
+// IntLiteral is an Node node for integer literals
 type IntLiteral int
 
 // Calc simply returns the integer itself
