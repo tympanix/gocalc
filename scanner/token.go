@@ -5,7 +5,7 @@ type Token int
 
 const (
 	EOF Token = iota
-	IDENT
+	INT
 	PLUS
 	MUL
 	LPAR

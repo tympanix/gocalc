@@ -93,7 +93,7 @@ func (p *Parser) parseMul() ast.Node {
 }
 
 func (p *Parser) parseInteger() ast.Node {
-	if p.have(scanner.IDENT) {
+	if p.have(scanner.INT) {
 		_, str := p.get()
 		i, err := strconv.Atoi(str)
 		if err != nil {

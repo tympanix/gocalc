@@ -72,7 +72,7 @@ func (s *Scanner) NextToken() (Token, string) {
 			for unicode.IsNumber(s.peek()) {
 				r = s.next()
 			}
-			return IDENT, s.get()
+			return INT, s.get()
 		} else if r == '+' {
 			return PLUS, s.get()
 		} else if r == '*' {
