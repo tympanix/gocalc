@@ -5,6 +5,8 @@ import (
 	"bytes"
 	"os"
 	"unicode"
+
+	"github.com/tympanix/tymlang/scanner/token"
 )
 
 // Scanner is able to scan input files
@@ -57,7 +59,7 @@ func (s *Scanner) get() string {
 }
 
 // NextToken retrieves the next token from the scanner
-func (s *Scanner) NextToken() (Token, string) {
+func (s *Scanner) NextToken() (token.Token, string) {
 
 	for {
 		for unicode.IsSpace(s.peek()) {
@@ -72,19 +74,19 @@ func (s *Scanner) NextToken() (Token, string) {
 			for unicode.IsNumber(s.peek()) {
 				r = s.next()
 			}
-			return INT, s.get()
+			return token.INT, s.get()
 		} else if r == '+' {
-			return PLUS, s.get()
+			return token.PLUS, s.get()
 		} else if r == '*' {
-			return MUL, s.get()
+			return token.MUL, s.get()
 		} else if r == '(' {
-			return LPAR, s.get()
+			return token.LPAR, s.get()
 		} else if r == ')' {
-			return RPAR, s.get()
+			return token.RPAR, s.get()
 		} else if r == '^' {
-			return POW, s.get()
+			return token.POW, s.get()
 		} else if r == 0 {
-			return EOF, ""
+			return token.EOF, ""
 		}
 
 	}

@@ -6,6 +6,7 @@ import (
 
 	"github.com/tympanix/tymlang/ast"
 	"github.com/tympanix/tymlang/scanner"
+	"github.com/tympanix/tymlang/scanner/token"
 )
 
 // Parser parses the input program from a scanner
@@ -16,7 +17,7 @@ type Parser struct {
 }
 
 type tokenEntry struct {
-	token scanner.Token
+	token token.Token
 	str   string
 }
 
@@ -25,7 +26,7 @@ func New(s *scanner.Scanner) *Parser {
 	return &Parser{s: s}
 }
 
-func (p *Parser) have(t scanner.Token) bool {
+func (p *Parser) have(t token.Token) bool {
 	if len(p.tokens) == 0 {
 		next, str := p.s.NextToken()
 		e := tokenEntry{
@@ -47,14 +48,14 @@ func (p *Parser) have(t scanner.Token) bool {
 
 }
 
-func (p *Parser) expect(t scanner.Token) (scanner.Token, string) {
+func (p *Parser) expect(t token.Token) (token.Token, string) {
 	if !p.have(t) {
 		log.Fatal("Unexpected token")
 	}
 	return p.get()
 }
 
-func (p *Parser) get() (scanner.Token, string) {
+func (p *Parser) get() (token.Token, string) {
 	e := p.last
 	return e.token, e.str
 }
@@ -71,7 +72,7 @@ func (p *Parser) parseExpression() ast.Node {
 func (p *Parser) parsePlus() ast.Node {
 	lhs := p.parseMul()
 
-	for p.have(scanner.PLUS) {
+	for p.have(token.PLUS) {
 		lhs = ast.PlusOp{
 			Lhs: lhs,
 			Rhs: p.parseMul(),
@@ -83,7 +84,7 @@ func (p *Parser) parsePlus() ast.Node {
 func (p *Parser) parseMul() ast.Node {
 	lhs := p.parsePow()
 
-	for p.have(scanner.MUL) {
+	for p.have(token.MUL) {
 		lhs = ast.MulOp{
 			Lhs: lhs,
 			Rhs: p.parsePow(),
@@ -95,7 +96,7 @@ func (p *Parser) parseMul() ast.Node {
 func (p *Parser) parsePow() ast.Node {
 	lhs := p.parseInteger()
 
-	for p.have(scanner.POW) {
+	for p.have(token.POW) {
 		lhs = ast.PowOp{
 			Lhs: lhs,
 			Rhs: p.parseInteger(),
@@ -105,16 +106,16 @@ func (p *Parser) parsePow() ast.Node {
 }
 
 func (p *Parser) parseInteger() ast.Node {
-	if p.have(scanner.INT) {
+	if p.have(token.INT) {
 		_, str := p.get()
 		i, err := strconv.Atoi(str)
 		if err != nil {
 			log.Fatal(err)
 		}
 		return ast.IntLiteral(i)
-	} else if p.have(scanner.LPAR) {
+	} else if p.have(token.LPAR) {
 		exp := p.parseExpression()
-		p.expect(scanner.RPAR)
+		p.expect(token.RPAR)
 		return exp
 	}
 	log.Fatal("Unexpected token")

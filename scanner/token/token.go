@@ -1,4 +1,4 @@
-package scanner
+package token
 
 // Token reprensents a token from the parser
 type Token int
