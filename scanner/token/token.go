@@ -33,6 +33,7 @@ const (
 	EOF Kind = iota
 	INT
 	PLUS
+	MINUS
 	MUL
 	DIV
 	POW

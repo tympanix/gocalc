@@ -61,10 +61,20 @@ func (p *Parser) parseExpression() ast.Node {
 func (p *Parser) parsePlus() ast.Node {
 	lhs := p.parseMul()
 
-	for p.have(token.PLUS) {
-		lhs = ast.PlusOp{
-			Lhs: lhs,
-			Rhs: p.parseMul(),
+	for {
+		if p.have(token.PLUS) {
+			lhs = ast.PlusOp{
+				Lhs: lhs,
+				Rhs: p.parseMul(),
+			}
+		}
+		if p.have(token.MINUS) {
+			lhs = ast.MinusOp{
+				Lhs: lhs,
+				Rhs: p.parseMul(),
+			}
+		} else {
+			break
 		}
 	}
 	return lhs

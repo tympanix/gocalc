@@ -10,6 +10,18 @@ import (
 	"github.com/tympanix/gocalc/scanner/token"
 )
 
+var (
+	symbols = map[rune]token.Kind{
+		'+': token.PLUS,
+		'-': token.MINUS,
+		'*': token.MUL,
+		'/': token.DIV,
+		'^': token.POW,
+		'(': token.LPAR,
+		')': token.RPAR,
+	}
+)
+
 // Scanner is able to scan input files
 type Scanner struct {
 	r   *bufio.Reader
@@ -65,7 +77,6 @@ func (s *Scanner) newToken(kind token.Kind) *token.Token {
 
 // NextToken retrieves the next token from the scanner
 func (s *Scanner) NextToken() *token.Token {
-
 	for {
 		for unicode.IsSpace(s.peek()) {
 			s.discard()
@@ -78,24 +89,12 @@ func (s *Scanner) NextToken() *token.Token {
 				r = s.next()
 			}
 			return s.newToken(token.INT)
-		} else if r == '+' {
-			return s.newToken(token.PLUS)
-		} else if r == '*' {
-			return s.newToken(token.MUL)
-		} else if r == '/' {
-			return s.newToken(token.DIV)
-		} else if r == '(' {
-			return s.newToken(token.LPAR)
-		} else if r == ')' {
-			return s.newToken(token.RPAR)
-		} else if r == '^' {
-			return s.newToken(token.POW)
+		} else if t, ok := symbols[r]; ok {
+			return s.newToken(t)
 		} else if r == 0 {
 			return s.newToken(token.EOF)
 		} else {
 			log.Fatalf("Unknown token %c\n", r)
 		}
-
 	}
-
 }

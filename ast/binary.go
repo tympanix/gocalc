@@ -28,6 +28,23 @@ func (p PlusOp) Print() {
 	debug.Outdent()
 }
 
+// MinusOp represents an addition of integers
+type MinusOp binaryExpression
+
+// Calc returns the addition of the two operands
+func (p MinusOp) Calc() int {
+	return p.Lhs.Calc() - p.Rhs.Calc()
+}
+
+// Print prints the addition opeator to the screen
+func (p MinusOp) Print() {
+	debug.Println("MinusOp(+)")
+	debug.Indent()
+	p.Lhs.Print()
+	p.Rhs.Print()
+	debug.Outdent()
+}
+
 // MulOp represents an multiplication of integers
 type MulOp binaryExpression
 
