@@ -6,92 +6,108 @@ import (
 	"github.com/tympanix/gocalc/debug"
 )
 
+func newBinaryExp(op string, lhs Node, rhs Node) *binaryExpression {
+	return &binaryExpression{
+		op:  op,
+		lhs: lhs,
+		rhs: rhs,
+	}
+}
+
 type binaryExpression struct {
-	Lhs Node
-	Rhs Node
+	op  string
+	lhs Node
+	rhs Node
+}
+
+// Print prints the binary expression
+func (p *binaryExpression) Print() {
+	debug.Println(p.op)
+	debug.Indent()
+	p.lhs.Print()
+	p.rhs.Print()
+	debug.Outdent()
+}
+
+func (p *binaryExpression) LHS() Node {
+	return p.lhs
+}
+
+func (p *binaryExpression) RHS() Node {
+	return p.rhs
+}
+
+// NewPlusOp return a new AST node for the plus operator
+func NewPlusOp(lhs Node, rhs Node) *PlusOp {
+	return &PlusOp{newBinaryExp("+", lhs, rhs)}
 }
 
 // PlusOp represents an addition of integers
-type PlusOp binaryExpression
-
-// Calc returns the addition of the two operands
-func (p PlusOp) Calc() int {
-	return p.Lhs.Calc() + p.Rhs.Calc()
+type PlusOp struct {
+	*binaryExpression
 }
 
-// Print prints the addition opeator to the screen
-func (p PlusOp) Print() {
-	debug.Println("PlusOp(+)")
-	debug.Indent()
-	p.Lhs.Print()
-	p.Rhs.Print()
-	debug.Outdent()
+// Calc returns the addition of the two operands
+func (p *PlusOp) Calc() int {
+	return p.LHS().Calc() + p.RHS().Calc()
+}
+
+// NewMinusOp returns a new AST node for the minus operator
+func NewMinusOp(lhs Node, rhs Node) *MinusOp {
+	return &MinusOp{newBinaryExp("-", lhs, rhs)}
 }
 
 // MinusOp represents an addition of integers
-type MinusOp binaryExpression
-
-// Calc returns the addition of the two operands
-func (p MinusOp) Calc() int {
-	return p.Lhs.Calc() - p.Rhs.Calc()
+type MinusOp struct {
+	*binaryExpression
 }
 
-// Print prints the addition opeator to the screen
-func (p MinusOp) Print() {
-	debug.Println("MinusOp(+)")
-	debug.Indent()
-	p.Lhs.Print()
-	p.Rhs.Print()
-	debug.Outdent()
+// Calc returns the addition of the two operands
+func (p *MinusOp) Calc() int {
+	return p.LHS().Calc() - p.RHS().Calc()
+}
+
+// NewMulOp returns a new AST node for the mul operator
+func NewMulOp(lhs Node, rhs Node) *MulOp {
+	return &MulOp{newBinaryExp("*", lhs, rhs)}
 }
 
 // MulOp represents an multiplication of integers
-type MulOp binaryExpression
-
-// Calc returns the multiplication of the two operands
-func (p MulOp) Calc() int {
-	return p.Lhs.Calc() * p.Rhs.Calc()
+type MulOp struct {
+	*binaryExpression
 }
 
-// Print prints the multiplcation to the screen
-func (p MulOp) Print() {
-	debug.Println("MulOp(*)")
-	debug.Indent()
-	p.Lhs.Print()
-	p.Rhs.Print()
-	debug.Outdent()
+// Calc returns the multiplication of the two operands
+func (p *MulOp) Calc() int {
+	return p.LHS().Calc() * p.RHS().Calc()
+}
+
+// NewDivOp returns a new AST node for the div operator
+func NewDivOp(lhs Node, rhs Node) *DivOp {
+	return &DivOp{newBinaryExp("/", lhs, rhs)}
 }
 
 // DivOp represents an multiplication of integers
-type DivOp binaryExpression
-
-// Calc returns the multiplication of the two operands
-func (p DivOp) Calc() int {
-	return p.Lhs.Calc() / p.Rhs.Calc()
+type DivOp struct {
+	*binaryExpression
 }
 
-// Print prints the multiplcation to the screen
-func (p DivOp) Print() {
-	debug.Println("DivOp(*)")
-	debug.Indent()
-	p.Lhs.Print()
-	p.Rhs.Print()
-	debug.Outdent()
+// Calc returns the multiplication of the two operands
+func (p *DivOp) Calc() int {
+	return p.LHS().Calc() / p.RHS().Calc()
+}
+
+// NewPowOp returns a new AST node for the pow operator
+func NewPowOp(lhs Node, rhs Node) *PowOp {
+	return &PowOp{newBinaryExp("^", lhs, rhs)}
 }
 
 // PowOp represents an multiplication of integers
-type PowOp binaryExpression
-
-// Calc returns the multiplication of the two operands
-func (p PowOp) Calc() int {
-	return int(math.Pow(float64(p.Lhs.Calc()), float64(p.Rhs.Calc())))
+type PowOp struct {
+	*binaryExpression
 }
 
-// Print prints the multiplcation to the screen
-func (p PowOp) Print() {
-	debug.Println("PowOp(^)")
-	debug.Indent()
-	p.Lhs.Print()
-	p.Rhs.Print()
-	debug.Outdent()
+// Calc returns the multiplication of the two operands
+func (p *PowOp) Calc() int {
+	return int(math.Pow(float64(p.LHS().Calc()), float64(p.RHS().Calc())))
 }
