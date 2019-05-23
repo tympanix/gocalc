@@ -3,6 +3,7 @@ package scanner
 import (
 	"bufio"
 	"bytes"
+	"io"
 	"log"
 	"os"
 	"unicode"
@@ -29,8 +30,8 @@ type Scanner struct {
 	i   int
 }
 
-// New creates a new scanner
-func New(path string) (*Scanner, error) {
+// NewFromFile creates a new scanner from a file path
+func NewFromFile(path string) (*Scanner, error) {
 
 	f, err := os.Open(path)
 
@@ -40,6 +41,14 @@ func New(path string) (*Scanner, error) {
 
 	return &Scanner{
 		r: bufio.NewReader(f),
+		i: 0,
+	}, nil
+}
+
+// NewFromReader returns a new scanner from a io.Reader object
+func NewFromReader(r io.Reader) (*Scanner, error) {
+	return &Scanner{
+		r: bufio.NewReader(r),
 		i: 0,
 	}, nil
 }

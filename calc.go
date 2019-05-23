@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	s, err := scanner.New("program.p")
+	s, err := scanner.NewFromFile("program.p")
 
 	if err != nil {
 		log.Fatalln(err)
