@@ -84,11 +84,3 @@ func TestPass(t *testing.T) {
 	}
 
 }
-
-func TestNeg(t *testing.T) {
-	s, _ := scanner.NewFromString("sin(2+2)")
-
-	p := parser.New(s).Parse()
-	p.Analyze()
-	p.Calc()
-}
