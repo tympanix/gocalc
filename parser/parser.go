@@ -27,6 +27,8 @@ var (
 		"atan":  ast.NewAtanOp,
 		"ln":    ast.NewLnOp,
 		"abs":   ast.NewAbsOp,
+		"rad":   ast.NewRadOp,
+		"deg":   ast.NewDegOp,
 	}
 
 	constants = map[string]constFactory{

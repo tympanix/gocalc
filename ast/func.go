@@ -177,3 +177,27 @@ func NewLnOp(params []Node) Node {
 		},
 	}
 }
+
+// NewDegOp returns the AST node for the deg function
+func NewDegOp(params []Node) Node {
+	return &funcExp{
+		name:    "deg",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return params[0].Calc() * 180 / math.Pi
+		},
+	}
+}
+
+// NewRadOp returns the AST node for the rad function
+func NewRadOp(params []Node) Node {
+	return &funcExp{
+		name:    "rad",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return params[0].Calc() * math.Pi / 180
+		},
+	}
+}
