@@ -48,7 +48,7 @@ type PlusOp struct {
 }
 
 // Calc returns the addition of the two operands
-func (p *PlusOp) Calc() int {
+func (p *PlusOp) Calc() float64 {
 	return p.LHS().Calc() + p.RHS().Calc()
 }
 
@@ -63,7 +63,7 @@ type MinusOp struct {
 }
 
 // Calc returns the addition of the two operands
-func (p *MinusOp) Calc() int {
+func (p *MinusOp) Calc() float64 {
 	return p.LHS().Calc() - p.RHS().Calc()
 }
 
@@ -78,7 +78,7 @@ type MulOp struct {
 }
 
 // Calc returns the multiplication of the two operands
-func (p *MulOp) Calc() int {
+func (p *MulOp) Calc() float64 {
 	return p.LHS().Calc() * p.RHS().Calc()
 }
 
@@ -93,7 +93,7 @@ type DivOp struct {
 }
 
 // Calc returns the multiplication of the two operands
-func (p *DivOp) Calc() int {
+func (p *DivOp) Calc() float64 {
 	return p.LHS().Calc() / p.RHS().Calc()
 }
 
@@ -108,6 +108,6 @@ type PowOp struct {
 }
 
 // Calc returns the multiplication of the two operands
-func (p *PowOp) Calc() int {
-	return int(math.Pow(float64(p.LHS().Calc()), float64(p.RHS().Calc())))
+func (p *PowOp) Calc() float64 {
+	return math.Pow(p.LHS().Calc(), p.RHS().Calc())
 }

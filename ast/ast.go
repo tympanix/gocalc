@@ -4,16 +4,16 @@ import "github.com/tympanix/gocalc/debug"
 
 // Node represents a node in the abstract syntax tree
 type Node interface {
-	Calc() int
+	Calc() float64
 	Print()
 }
 
 // NumberLiteral is an Node node for integer literals
-type NumberLiteral int
+type NumberLiteral float64
 
 // Calc simply returns the integer itself
-func (i NumberLiteral) Calc() int {
-	return int(i)
+func (i NumberLiteral) Calc() float64 {
+	return float64(i)
 }
 
 // Print displays the integer literal on the screen
