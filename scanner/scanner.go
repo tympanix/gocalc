@@ -22,6 +22,7 @@ var (
 		'(': token.LPAR,
 		')': token.RPAR,
 		',': token.COMMA,
+		'.': token.DOT,
 	}
 )
 
@@ -108,9 +109,19 @@ func (s *Scanner) NextToken() *token.Token {
 
 		r := s.next()
 
-		if unicode.IsNumber(r) {
-			for unicode.IsNumber(s.peekRune()) {
-				r = s.next()
+		if unicode.IsNumber(r) || r == '.' {
+			hasDot := r == '.'
+			for {
+				if unicode.IsNumber(s.peekRune()) {
+					r = s.next()
+					continue
+				}
+				if s.peekRune() == '.' && !hasDot {
+					r = s.next()
+					hasDot = true
+					continue
+				}
+				break
 			}
 			return s.newToken(token.NUMBER)
 		} else if unicode.IsLetter(r) {

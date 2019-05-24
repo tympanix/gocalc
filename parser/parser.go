@@ -19,6 +19,14 @@ var (
 		"log10": ast.NewLog10Op,
 		"log2":  ast.NewLog2Op,
 		"pow":   ast.NewPowFnOp,
+		"sin":   ast.NewSinOp,
+		"cos":   ast.NewCosOp,
+		"tan":   ast.NewTanOp,
+		"asin":  ast.NewAsinOp,
+		"acos":  ast.NewAcosOp,
+		"atan":  ast.NewAtanOp,
+		"ln":    ast.NewLnOp,
+		"abs":   ast.NewAbsOp,
 	}
 
 	constants = map[string]constFactory{
@@ -40,15 +48,15 @@ func New(s *scanner.Scanner) *Parser {
 	return &Parser{s: s}
 }
 
-func (p *Parser) pump(n int) *token.Token {
+func (p *Parser) pump(n int) {
 	for len(p.tokens) < n {
 		next := p.s.NextToken()
 		p.tokens = append(p.tokens, next)
 	}
-	return p.current()
 }
 
 func (p *Parser) current() *token.Token {
+	p.pump(1)
 	return p.tokens[0]
 }
 
@@ -61,7 +69,8 @@ func (p *Parser) pop() {
 }
 
 func (p *Parser) have(t token.Kind) bool {
-	e := p.pump(1)
+	p.pump(1)
+	e := p.current()
 
 	if e.Kind() == t {
 		p.pop()
@@ -134,13 +143,10 @@ func (p *Parser) parsePow() ast.Node {
 }
 
 func (p *Parser) parseAtomic() ast.Node {
-	if p.have(token.NUMBER) {
-		t := p.last()
-		i, err := strconv.ParseFloat(t.String(), 64)
-		if err != nil {
-			log.Fatal(err)
-		}
-		return ast.NewNumberLiteral(i)
+	if p.see(token.NUMBER) {
+		return p.parseNumber()
+	} else if p.have(token.MINUS) {
+		return ast.NewNegOp(p.parseNumber())
 	} else if p.have(token.LPAR) {
 		exp := p.parseExpression()
 		p.expect(token.RPAR)
@@ -151,8 +157,18 @@ func (p *Parser) parseAtomic() ast.Node {
 		}
 		return p.parseConstant()
 	}
-	log.Fatalf("Unexpected token: %s\n", p.last().String())
+	log.Panicf("unexpected token: %s\n", p.current().String())
 	return nil
+}
+
+func (p *Parser) parseNumber() ast.Node {
+	p.expect(token.NUMBER)
+	t := p.last()
+	i, err := strconv.ParseFloat(t.String(), 64)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return ast.NewNumberLiteral(i)
 }
 
 func (p *Parser) parseConstant() ast.Node {

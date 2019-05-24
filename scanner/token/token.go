@@ -41,4 +41,5 @@ const (
 	LPAR
 	RPAR
 	COMMA
+	DOT
 )

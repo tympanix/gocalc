@@ -81,3 +81,99 @@ func NewPowFnOp(params []Node) Node {
 		},
 	}
 }
+
+// NewSinOp returns the AST node for the sin function
+func NewSinOp(params []Node) Node {
+	return &funcExp{
+		name:    "sin",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Sin(params[0].Calc())
+		},
+	}
+}
+
+// NewCosOp returns the AST node for the cos function
+func NewCosOp(params []Node) Node {
+	return &funcExp{
+		name:    "cos",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Cos(params[0].Calc())
+		},
+	}
+}
+
+// NewTanOp returns the AST node for the tan function
+func NewTanOp(params []Node) Node {
+	return &funcExp{
+		name:    "tan",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Tan(params[0].Calc())
+		},
+	}
+}
+
+// NewAsinOp returns the AST node for the asin function
+func NewAsinOp(params []Node) Node {
+	return &funcExp{
+		name:    "asin",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Asin(params[0].Calc())
+		},
+	}
+}
+
+// NewAcosOp returns the AST node for the acos function
+func NewAcosOp(params []Node) Node {
+	return &funcExp{
+		name:    "acos",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Acos(params[0].Calc())
+		},
+	}
+}
+
+// NewAtanOp returns the AST node for the acos function
+func NewAtanOp(params []Node) Node {
+	return &funcExp{
+		name:    "atan",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Atan(params[0].Calc())
+		},
+	}
+}
+
+// NewAbsOp returns the AST node for the abs function
+func NewAbsOp(params []Node) Node {
+	return &funcExp{
+		name:    "abs",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Abs(params[0].Calc())
+		},
+	}
+}
+
+// NewLnOp returns the AST node for the abs function
+func NewLnOp(params []Node) Node {
+	return &funcExp{
+		name:    "ln",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Log(params[0].Calc())
+		},
+	}
+}
