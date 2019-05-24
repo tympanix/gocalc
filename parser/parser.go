@@ -13,7 +13,10 @@ type funcExpFactory func(params []ast.Node) ast.Node
 
 var (
 	functions = map[string]funcExpFactory{
-		"sqrt": ast.NewSqrtOp,
+		"sqrt":  ast.NewSqrtOp,
+		"log":   ast.NewLog10Op,
+		"log10": ast.NewLog10Op,
+		"log2":  ast.NewLog2Op,
 	}
 )
 
