@@ -7,18 +7,11 @@ import (
 	"github.com/tympanix/gocalc/debug"
 )
 
-func newFuncExp(name string, nparams int, params []Node) *funcExp {
-	return &funcExp{
-		name:    name,
-		nparams: nparams,
-		params:  params,
-	}
-}
-
 type funcExp struct {
 	name    string
 	nparams int
 	params  []Node
+	fn      func(params []Node) float64
 }
 
 func (f *funcExp) Print() {
@@ -36,62 +29,55 @@ func (f *funcExp) Analyze() {
 	}
 }
 
+// Calc returns the result of the function
+func (f *funcExp) Calc() float64 {
+	return f.fn(f.params)
+}
+
 // NewSqrtOp returns a new square root operator
 func NewSqrtOp(params []Node) Node {
-	return &SqrtOp{newFuncExp("sqrt", 1, params)}
-}
-
-// SqrtOp is the AST node for the square root operator
-type SqrtOp struct {
-	*funcExp
-}
-
-// Calc returns the square root of the argument
-func (s *SqrtOp) Calc() float64 {
-	return math.Sqrt(s.params[0].Calc())
+	return &funcExp{
+		name:    "sqrt",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Sqrt(params[0].Calc())
+		},
+	}
 }
 
 // NewLog10Op returns a new AST node for log operations (base 10)
 func NewLog10Op(params []Node) Node {
-	return &Log10Op{newFuncExp("log", 1, params)}
-}
-
-// Log10Op calculates log (base 10)
-type Log10Op struct {
-	*funcExp
-}
-
-// Calc performs log10 on the parameter
-func (l *Log10Op) Calc() float64 {
-	return math.Log10(l.params[0].Calc())
+	return &funcExp{
+		name:    "log",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Log10(params[0].Calc())
+		},
+	}
 }
 
 // NewLog2Op returns the AST node for log2 operations
 func NewLog2Op(params []Node) Node {
-	return &Log2Op{newFuncExp("log2", 1, params)}
-}
-
-// Log2Op is the structure of a log2 AST node
-type Log2Op struct {
-	*funcExp
-}
-
-// Calc performs log2 on the paramter
-func (l *Log2Op) Calc() float64 {
-	return math.Log2(l.params[0].Calc())
+	return &funcExp{
+		name:    "log2",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Log2(params[0].Calc())
+		},
+	}
 }
 
 // NewPowFnOp returns the AST node for the pow function
 func NewPowFnOp(params []Node) Node {
-	return &PowFnOp{newFuncExp("pow", 2, params)}
-}
-
-// PowFnOp is the structure of the pow AST node
-type PowFnOp struct {
-	*funcExp
-}
-
-// Calc performs the pow operation
-func (p *PowFnOp) Calc() float64 {
-	return math.Pow(p.params[0].Calc(), p.params[1].Calc())
+	return &funcExp{
+		name:    "pow",
+		nparams: 2,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Pow(params[0].Calc(), params[1].Calc())
+		},
+	}
 }
