@@ -98,7 +98,9 @@ func (p *Parser) last() *token.Token {
 
 // Parse parses the program
 func (p *Parser) Parse() ast.Node {
-	return p.parseExpression()
+	exp := p.parseExpression()
+	p.expect(token.EOF)
+	return exp
 }
 
 func (p *Parser) parseExpression() ast.Node {
@@ -148,7 +150,7 @@ func (p *Parser) parseAtomic() ast.Node {
 	if p.see(token.NUMBER) {
 		return p.parseNumber()
 	} else if p.have(token.MINUS) {
-		return ast.NewNegOp(p.parseNumber())
+		return ast.NewNegOp(p.parseAtomic())
 	} else if p.have(token.LPAR) {
 		exp := p.parseExpression()
 		p.expect(token.RPAR)
