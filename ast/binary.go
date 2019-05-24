@@ -6,36 +6,41 @@ import (
 	"github.com/tympanix/gocalc/debug"
 )
 
-func newBinaryExp(op string, lhs Node, rhs Node) *binaryExpression {
-	return &binaryExpression{
+func newBinaryExp(op string, lhs Node, rhs Node) *binaryExp {
+	return &binaryExp{
 		op:  op,
 		lhs: lhs,
 		rhs: rhs,
 	}
 }
 
-type binaryExpression struct {
+type binaryExp struct {
 	op  string
 	lhs Node
 	rhs Node
-	NopAnalyzer
+}
+
+// Analyse performs analysis on the right- and lef-hand side
+func (b *binaryExp) Analyze() {
+	b.LHS().Analyze()
+	b.RHS().Analyze()
 }
 
 // Print prints the binary expression
-func (p *binaryExpression) Print() {
-	debug.Println(p.op)
+func (b *binaryExp) Print() {
+	debug.Println(b.op)
 	debug.Indent()
-	p.lhs.Print()
-	p.rhs.Print()
+	b.LHS().Print()
+	b.RHS().Print()
 	debug.Outdent()
 }
 
-func (p *binaryExpression) LHS() Node {
-	return p.lhs
+func (b *binaryExp) LHS() Node {
+	return b.lhs
 }
 
-func (p *binaryExpression) RHS() Node {
-	return p.rhs
+func (b *binaryExp) RHS() Node {
+	return b.rhs
 }
 
 // NewPlusOp return a new AST node for the plus operator
@@ -45,7 +50,7 @@ func NewPlusOp(lhs Node, rhs Node) *PlusOp {
 
 // PlusOp represents an addition of integers
 type PlusOp struct {
-	*binaryExpression
+	*binaryExp
 }
 
 // Calc returns the addition of the two operands
@@ -60,7 +65,7 @@ func NewMinusOp(lhs Node, rhs Node) *MinusOp {
 
 // MinusOp represents an addition of integers
 type MinusOp struct {
-	*binaryExpression
+	*binaryExp
 }
 
 // Calc returns the addition of the two operands
@@ -75,7 +80,7 @@ func NewMulOp(lhs Node, rhs Node) *MulOp {
 
 // MulOp represents an multiplication of integers
 type MulOp struct {
-	*binaryExpression
+	*binaryExp
 }
 
 // Calc returns the multiplication of the two operands
@@ -90,7 +95,7 @@ func NewDivOp(lhs Node, rhs Node) *DivOp {
 
 // DivOp represents an multiplication of integers
 type DivOp struct {
-	*binaryExpression
+	*binaryExp
 }
 
 // Calc returns the multiplication of the two operands
@@ -105,7 +110,7 @@ func NewPowOp(lhs Node, rhs Node) *PowOp {
 
 // PowOp represents an multiplication of integers
 type PowOp struct {
-	*binaryExpression
+	*binaryExp
 }
 
 // Calc returns the multiplication of the two operands
