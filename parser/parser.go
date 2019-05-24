@@ -34,6 +34,7 @@ var (
 
 	constants = map[string]constFactory{
 		"pi": ast.NewPiOp,
+		"π":  ast.NewPiOp,
 		"e":  ast.NewEulerOp,
 	}
 )
