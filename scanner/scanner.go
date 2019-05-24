@@ -119,7 +119,7 @@ func (s *Scanner) NextToken() *token.Token {
 			}
 			return s.newToken(token.IDENTIFIER)
 		} else if r == '/' && s.peekRune() == '/' {
-			for s.peekRune() != '\n' || s.peekRune() == 0 {
+			for s.peekRune() != '\n' && s.peekRune() != 0 {
 				s.next()
 			}
 		} else if t, ok := symbols[r]; ok {
