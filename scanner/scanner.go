@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 	"unicode"
 
 	"github.com/tympanix/gocalc/scanner/token"
@@ -20,6 +21,7 @@ var (
 		'^': token.POW,
 		'(': token.LPAR,
 		')': token.RPAR,
+		',': token.COMMA,
 	}
 )
 
@@ -41,7 +43,6 @@ func NewFromFile(path string) (*Scanner, error) {
 
 	return &Scanner{
 		r: bufio.NewReader(f),
-		i: 0,
 	}, nil
 }
 
@@ -49,7 +50,13 @@ func NewFromFile(path string) (*Scanner, error) {
 func NewFromReader(r io.Reader) (*Scanner, error) {
 	return &Scanner{
 		r: bufio.NewReader(r),
-		i: 0,
+	}, nil
+}
+
+// NewFromString returns a new scanner from a string
+func NewFromString(str string) (*Scanner, error) {
+	return &Scanner{
+		r: bufio.NewReader(strings.NewReader(str)),
 	}, nil
 }
 
@@ -98,6 +105,11 @@ func (s *Scanner) NextToken() *token.Token {
 				r = s.next()
 			}
 			return s.newToken(token.NUMBER)
+		} else if unicode.IsLetter(r) {
+			for unicode.IsNumber(s.peek()) || unicode.IsLetter(s.peek()) {
+				r = s.next()
+			}
+			return s.newToken(token.IDENTIFIER)
 		} else if t, ok := symbols[r]; ok {
 			return s.newToken(t)
 		} else if r == 0 {

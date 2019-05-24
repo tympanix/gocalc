@@ -9,6 +9,14 @@ import (
 	"github.com/tympanix/gocalc/scanner/token"
 )
 
+type funcExpFactory func(params []ast.Node) ast.Node
+
+var (
+	functions = map[string]funcExpFactory{
+		"sqrt": ast.NewSqrtOp,
+	}
+)
+
 // Parser parses the input program from a scanner
 type Parser struct {
 	s      *scanner.Scanner
@@ -49,8 +57,8 @@ func (p *Parser) get() *token.Token {
 	return p.last
 }
 
-// ParseProgram parses the program
-func (p *Parser) ParseProgram() ast.Node {
+// Parse parses the program
+func (p *Parser) Parse() ast.Node {
 	return p.parseExpression()
 }
 
@@ -109,6 +117,25 @@ func (p *Parser) parseInteger() ast.Node {
 		exp := p.parseExpression()
 		p.expect(token.RPAR)
 		return exp
+	} else if p.have(token.IDENTIFIER) {
+		fn := p.get()
+		var params []ast.Node
+		p.expect(token.LPAR)
+		for {
+			exp := p.parseExpression()
+			if exp != nil {
+				params = append(params, exp)
+			}
+			if !p.have(token.COMMA) {
+				break
+			}
+		}
+		p.expect(token.RPAR)
+		if f, ok := functions[fn.String()]; ok {
+			return f(params)
+		} else {
+			log.Fatalf("Unknown function: %s\n", fn.String())
+		}
 	}
 	log.Fatalf("Unexpected token: %s\n", p.get().String())
 	return nil

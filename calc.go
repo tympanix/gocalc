@@ -8,11 +8,13 @@ import (
 
 	"github.com/tympanix/gocalc/parser"
 	"github.com/tympanix/gocalc/scanner"
+	"github.com/tympanix/gocalc/scanner/token"
 )
 
 var (
-	verbose = flag.Bool("v", false, "verbose")
-	program = flag.String("p", "", "program")
+	verbose  = flag.Bool("v", false, "verbose")
+	scanning = flag.Bool("s", false, "scanning")
+	program  = flag.String("p", "", "program")
 )
 
 func main() {
@@ -38,8 +40,17 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	p := parser.New(s)
-	n := p.ParseProgram()
+	if *scanning {
+		for {
+			t := s.NextToken()
+			if t.Kind() == token.EOF {
+				return
+			}
+			fmt.Printf("%-12s: %s\n", t.Kind().String(), t.String())
+		}
+	}
+
+	n := parser.New(s).Parse()
 
 	fmt.Println(n.Calc())
 

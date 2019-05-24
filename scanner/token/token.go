@@ -31,6 +31,7 @@ type Kind int
 
 const (
 	EOF Kind = iota
+	IDENTIFIER
 	NUMBER
 	PLUS
 	MINUS
@@ -39,4 +40,5 @@ const (
 	POW
 	LPAR
 	RPAR
+	COMMA
 )
