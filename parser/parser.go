@@ -98,7 +98,7 @@ func (p *Parser) parsePow() ast.Node {
 }
 
 func (p *Parser) parseInteger() ast.Node {
-	if p.have(token.INT) {
+	if p.have(token.NUMBER) {
 		t := p.get()
 		i, err := strconv.Atoi(t.String())
 		if err != nil {

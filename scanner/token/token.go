@@ -31,7 +31,7 @@ type Kind int
 
 const (
 	EOF Kind = iota
-	INT
+	NUMBER
 	PLUS
 	MINUS
 	MUL

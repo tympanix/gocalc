@@ -97,7 +97,7 @@ func (s *Scanner) NextToken() *token.Token {
 			for unicode.IsNumber(s.peek()) {
 				r = s.next()
 			}
-			return s.newToken(token.INT)
+			return s.newToken(token.NUMBER)
 		} else if t, ok := symbols[r]; ok {
 			return s.newToken(t)
 		} else if r == 0 {
