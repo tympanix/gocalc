@@ -73,12 +73,20 @@ func (s *Scanner) discard() {
 	s.r.Discard(1)
 }
 
-func (s *Scanner) peek() rune {
+func (s *Scanner) peekRune() rune {
 	b, err := s.r.Peek(1)
 	if err != nil {
 		return 0
 	}
 	return rune(b[0])
+}
+
+func (s *Scanner) peek(n int) string {
+	str, err := s.r.Peek(n)
+	if err != nil {
+		return ""
+	}
+	return string(str)
 }
 
 func (s *Scanner) get() string {
@@ -94,22 +102,26 @@ func (s *Scanner) newToken(kind token.Kind) *token.Token {
 // NextToken retrieves the next token from the scanner
 func (s *Scanner) NextToken() *token.Token {
 	for {
-		for unicode.IsSpace(s.peek()) {
+		for unicode.IsSpace(s.peekRune()) {
 			s.discard()
 		}
 
 		r := s.next()
 
 		if unicode.IsNumber(r) {
-			for unicode.IsNumber(s.peek()) {
+			for unicode.IsNumber(s.peekRune()) {
 				r = s.next()
 			}
 			return s.newToken(token.NUMBER)
 		} else if unicode.IsLetter(r) {
-			for unicode.IsNumber(s.peek()) || unicode.IsLetter(s.peek()) {
+			for unicode.IsNumber(s.peekRune()) || unicode.IsLetter(s.peekRune()) {
 				r = s.next()
 			}
 			return s.newToken(token.IDENTIFIER)
+		} else if r == '/' && s.peekRune() == '/' {
+			for s.peekRune() != '\n' || s.peekRune() == 0 {
+				s.next()
+			}
 		} else if t, ok := symbols[r]; ok {
 			return s.newToken(t)
 		} else if r == 0 {
