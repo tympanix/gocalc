@@ -29,6 +29,7 @@ var (
 		"abs":   ast.NewAbsOp,
 		"rad":   ast.NewRadOp,
 		"deg":   ast.NewDegOp,
+		"round": ast.NewRoundOp,
 	}
 
 	constants = map[string]constFactory{

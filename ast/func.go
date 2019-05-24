@@ -201,3 +201,15 @@ func NewRadOp(params []Node) Node {
 		},
 	}
 }
+
+// NewRoundOp returns the AST node for the round function
+func NewRoundOp(params []Node) Node {
+	return &funcExp{
+		name:    "round",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Round(params[0].Calc())
+		},
+	}
+}
