@@ -10,6 +10,7 @@ import (
 )
 
 type funcExpFactory func(params []ast.Node) ast.Node
+type constFactory func() ast.Node
 
 var (
 	functions = map[string]funcExpFactory{
@@ -19,13 +20,19 @@ var (
 		"log2":  ast.NewLog2Op,
 		"pow":   ast.NewPowFnOp,
 	}
+
+	constants = map[string]constFactory{
+		"pi": ast.NewPiOp,
+		"e":  ast.NewEulerOp,
+	}
 )
 
 // Parser parses the input program from a scanner
 type Parser struct {
 	s      *scanner.Scanner
 	tokens []*token.Token
-	last   *token.Token
+	prev   *token.Token
+	i      int
 }
 
 // New return a new parser
@@ -33,32 +40,49 @@ func New(s *scanner.Scanner) *Parser {
 	return &Parser{s: s}
 }
 
-func (p *Parser) have(t token.Kind) bool {
-	if len(p.tokens) == 0 {
+func (p *Parser) pump(n int) *token.Token {
+	for len(p.tokens) < n {
 		next := p.s.NextToken()
 		p.tokens = append(p.tokens, next)
-		p.last = next
 	}
+	return p.current()
+}
 
-	e := p.tokens[0]
+func (p *Parser) current() *token.Token {
+	return p.tokens[0]
+}
+
+func (p *Parser) pop() {
+	if len(p.tokens) > 0 {
+		p.prev = p.tokens[0]
+		p.tokens = p.tokens[1:]
+	}
+	p.pump(1)
+}
+
+func (p *Parser) have(t token.Kind) bool {
+	e := p.pump(1)
 
 	if e.Kind() == t {
-		p.tokens = p.tokens[1:]
+		p.pop()
 	}
 
 	return e.Kind() == t
+}
 
+func (p *Parser) see(t token.Kind) bool {
+	return p.current().Kind() == t
 }
 
 func (p *Parser) expect(t token.Kind) *token.Token {
 	if !p.have(t) {
 		log.Fatalf("Expected token: %s\n", t.String())
 	}
-	return p.get()
+	return p.last()
 }
 
-func (p *Parser) get() *token.Token {
-	return p.last
+func (p *Parser) last() *token.Token {
+	return p.prev
 }
 
 // Parse parses the program
@@ -111,7 +135,7 @@ func (p *Parser) parsePow() ast.Node {
 
 func (p *Parser) parseAtomic() ast.Node {
 	if p.have(token.NUMBER) {
-		t := p.get()
+		t := p.last()
 		i, err := strconv.ParseFloat(t.String(), 64)
 		if err != nil {
 			log.Fatal(err)
@@ -122,25 +146,42 @@ func (p *Parser) parseAtomic() ast.Node {
 		p.expect(token.RPAR)
 		return exp
 	} else if p.have(token.IDENTIFIER) {
-		fn := p.get()
-		var params []ast.Node
-		p.expect(token.LPAR)
-		for {
-			exp := p.parseExpression()
-			if exp != nil {
-				params = append(params, exp)
-			}
-			if !p.have(token.COMMA) {
-				break
-			}
+		if p.see(token.LPAR) {
+			return p.parseFunc()
 		}
-		p.expect(token.RPAR)
-		if f, ok := functions[fn.String()]; ok {
-			return f(params)
-		} else {
-			log.Fatalf("Unknown function: %s\n", fn.String())
+		return p.parseConstant()
+	}
+	log.Fatalf("Unexpected token: %s\n", p.last().String())
+	return nil
+}
+
+func (p *Parser) parseConstant() ast.Node {
+	t := p.last()
+	if c, ok := constants[t.String()]; ok {
+		return c()
+	}
+	log.Fatalf("unknown constant: %s\n", t.String())
+	return nil
+}
+
+func (p *Parser) parseFunc() ast.Node {
+	fn := p.last()
+
+	var params []ast.Node
+	p.expect(token.LPAR)
+	for {
+		exp := p.parseExpression()
+		if exp != nil {
+			params = append(params, exp)
+		}
+		if !p.have(token.COMMA) {
+			break
 		}
 	}
-	log.Fatalf("Unexpected token: %s\n", p.get().String())
+	p.expect(token.RPAR)
+	if f, ok := functions[fn.String()]; ok {
+		return f(params)
+	}
+	log.Fatalf("Unknown function: %s\n", fn.String())
 	return nil
 }
