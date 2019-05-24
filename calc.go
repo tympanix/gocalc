@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/tympanix/gocalc/parser"
 	"github.com/tympanix/gocalc/scanner"
@@ -11,18 +12,28 @@ import (
 
 var (
 	verbose = flag.Bool("v", false, "verbose")
+	program = flag.String("p", "", "program")
 )
 
 func main() {
 
+	var s *scanner.Scanner
+	var err error
+
 	flag.Parse()
 
-	if flag.NArg() < 1 {
-		log.Fatalln("Missing program arguments")
+	if len(*program) > 0 {
+		r := strings.NewReader(*program)
+		s, err = scanner.NewFromReader(r)
 	}
 
-	s, err := scanner.NewFromFile(flag.Arg(0))
+	if flag.NArg() > 0 {
+		s, err = scanner.NewFromFile(flag.Arg(0))
+	}
 
+	if s == nil {
+		log.Fatalln("Missing program arguments")
+	}
 	if err != nil {
 		log.Fatalln(err)
 	}
