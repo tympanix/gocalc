@@ -8,15 +8,15 @@ type Node interface {
 	Print()
 }
 
-// IntLiteral is an Node node for integer literals
-type IntLiteral int
+// NumberLiteral is an Node node for integer literals
+type NumberLiteral int
 
 // Calc simply returns the integer itself
-func (i IntLiteral) Calc() int {
+func (i NumberLiteral) Calc() int {
 	return int(i)
 }
 
 // Print displays the integer literal on the screen
-func (i IntLiteral) Print() {
+func (i NumberLiteral) Print() {
 	debug.Println(i)
 }

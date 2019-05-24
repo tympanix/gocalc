@@ -104,7 +104,7 @@ func (p *Parser) parseInteger() ast.Node {
 		if err != nil {
 			log.Fatal(err)
 		}
-		return ast.IntLiteral(i)
+		return ast.NumberLiteral(i)
 	} else if p.have(token.LPAR) {
 		exp := p.parseExpression()
 		p.expect(token.RPAR)
