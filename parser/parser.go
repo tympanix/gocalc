@@ -17,6 +17,7 @@ var (
 		"log":   ast.NewLog10Op,
 		"log10": ast.NewLog10Op,
 		"log2":  ast.NewLog2Op,
+		"pow":   ast.NewPowFnOp,
 	}
 )
 
@@ -100,22 +101,22 @@ func (p *Parser) parseMul() ast.Node {
 }
 
 func (p *Parser) parsePow() ast.Node {
-	lhs := p.parseInteger()
+	lhs := p.parseAtomic()
 
 	for p.have(token.POW) {
-		lhs = ast.NewPowOp(lhs, p.parseInteger())
+		lhs = ast.NewPowOp(lhs, p.parseAtomic())
 	}
 	return lhs
 }
 
-func (p *Parser) parseInteger() ast.Node {
+func (p *Parser) parseAtomic() ast.Node {
 	if p.have(token.NUMBER) {
 		t := p.get()
-		i, err := strconv.Atoi(t.String())
+		i, err := strconv.ParseFloat(t.String(), 64)
 		if err != nil {
 			log.Fatal(err)
 		}
-		return ast.NumberLiteral(i)
+		return ast.NewNumberLiteral(i)
 	} else if p.have(token.LPAR) {
 		exp := p.parseExpression()
 		p.expect(token.RPAR)

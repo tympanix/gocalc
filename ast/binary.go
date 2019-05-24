@@ -18,6 +18,7 @@ type binaryExpression struct {
 	op  string
 	lhs Node
 	rhs Node
+	NopAnalyzer
 }
 
 // Print prints the binary expression

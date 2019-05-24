@@ -52,6 +52,8 @@ func main() {
 
 	n := parser.New(s).Parse()
 
+	n.Analyze()
+
 	fmt.Println(n.Calc())
 
 	if *verbose {
