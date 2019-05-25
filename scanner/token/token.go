@@ -42,8 +42,8 @@ const (
 	DIV
 	POW
 	MOD
-	LAND
-	LOR
+	AND
+	OR
 	LPAR
 	RPAR
 	COMMA
