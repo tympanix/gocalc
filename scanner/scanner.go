@@ -26,7 +26,6 @@ var (
 		'(': token.LPAR,
 		')': token.RPAR,
 		',': token.COMMA,
-		'.': token.DOT,
 	}
 )
 
