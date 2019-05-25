@@ -181,6 +181,9 @@ func (p *Parser) parseMul() ast.Node {
 			lhs = ast.NewDivOp(lhs, p.parsePow())
 		} else if p.have(token.MOD) {
 			lhs = ast.NewModOp(lhs, p.parsePow())
+		} else if p.see(token.IDENT) || p.see(token.LPAR) {
+			// implicit multiplication
+			lhs = ast.NewMulOp(lhs, p.parseAtomic())
 		} else {
 			break
 		}
