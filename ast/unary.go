@@ -20,6 +20,10 @@ func (u *unaryExp) Calc() float64 {
 	return u.fn(u.param)
 }
 
+func (u *unaryExp) Type() Type {
+	return u.param.Type()
+}
+
 // NewNegOp returns the AST node for unary negation operator
 func NewNegOp(param Node) Node {
 	return &unaryExp{

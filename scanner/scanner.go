@@ -155,7 +155,7 @@ func (s *Scanner) NextToken() *token.Token {
 
 		if s.has('0') {
 			if s.has('.') {
-				return s.scanIntegerToken()
+				return s.scanFloatToken()
 			} else if s.has('x') {
 				return s.scanHexToken()
 			} else if s.has('b') {
@@ -163,8 +163,10 @@ func (s *Scanner) NextToken() *token.Token {
 			}
 		} else if s.hasDigit() {
 			s.scanInteger()
-			s.has('.')
-			return s.scanIntegerToken()
+			if s.has('.') {
+				return s.scanFloatToken()
+			}
+			return s.scanIntToken()
 		} else if s.hasLetter() {
 			for s.hasLetter() || s.hasDigit() {
 				// noop
@@ -194,9 +196,14 @@ func (s *Scanner) scanInteger() {
 	}
 }
 
-func (s *Scanner) scanIntegerToken() *token.Token {
+func (s *Scanner) scanFloatToken() *token.Token {
 	s.scanInteger()
-	return s.newToken(token.DEC_LITERAL)
+	return s.newToken(token.FLOAT_LITERAL)
+}
+
+func (s *Scanner) scanIntToken() *token.Token {
+	s.scanInteger()
+	return s.newToken(token.INT_LITERAL)
 }
 
 func (s *Scanner) scanHexToken() *token.Token {

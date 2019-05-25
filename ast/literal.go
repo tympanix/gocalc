@@ -6,29 +6,37 @@ import (
 	"github.com/tympanix/gocalc/debug"
 )
 
-// NewNumberLiteral returns the AST node for number literals
-func NewNumberLiteral(n float64) Node {
-	return &NumberLiteral{n: n}
-}
-
-// NumberLiteral is an Node node for integer literals
-type NumberLiteral struct {
+type literal struct {
 	n float64
+	t Type
 	NopAnalyzer
 }
 
-// Calc simply returns the integer itself
-func (i *NumberLiteral) Calc() float64 {
-	return i.n
+func (l *literal) Calc() float64 {
+	return l.n
 }
 
-// Print displays the integer literal on the screen
-func (i *NumberLiteral) Print() {
-	debug.Println(i.n)
+func (l *literal) Print() {
+	debug.Println(l.n)
+}
+
+func (l *literal) Type() Type {
+	return l.t
+}
+
+// NewFloatLiteral returns the AST node for float literals
+func NewFloatLiteral(n float64) Node {
+	return &literal{n: n, t: FLOAT}
+}
+
+// NewIntegerLiteral returns the AST node for integer literals
+func NewIntegerLiteral(n float64) Node {
+	return &literal{n: n, t: INTEGER}
 }
 
 type constantExp struct {
 	name  string
+	t     Type
 	value float64
 	NopAnalyzer
 }
@@ -41,12 +49,16 @@ func (c *constantExp) Print() {
 	debug.Println(c.name)
 }
 
+func (c *constantExp) Type() Type {
+	return c.t
+}
+
 // NewPiOp return the AST node for PI
 func NewPiOp() Node {
-	return &constantExp{name: "pi", value: math.Pi}
+	return &constantExp{name: "pi", t: FLOAT, value: math.Pi}
 }
 
 // NewEulerOp returns the AST node for Eurler's number
 func NewEulerOp() Node {
-	return &constantExp{name: "e", value: math.E}
+	return &constantExp{name: "e", t: FLOAT, value: math.E}
 }

@@ -174,27 +174,34 @@ func (p *Parser) parseAtomic() ast.Node {
 }
 
 func (p *Parser) parseNumber() ast.Node {
-	if p.have(token.DEC_LITERAL) {
+	if p.have(token.FLOAT_LITERAL) {
 		t := p.last()
 		i, err := strconv.ParseFloat(t.String(), 64)
 		if err != nil {
 			panic(err)
 		}
-		return ast.NewNumberLiteral(i)
+		return ast.NewFloatLiteral(i)
+	} else if p.have(token.INT_LITERAL) {
+		t := p.last()
+		i, err := strconv.ParseUint(t.String(), 10, 64)
+		if err != nil {
+			panic(err)
+		}
+		return ast.NewIntegerLiteral(float64(i))
 	} else if p.have(token.HEX_LITERAL) {
 		t := p.last()
 		i, err := strconv.ParseUint(t.String()[2:], 16, 64)
 		if err != nil {
 			panic(err)
 		}
-		return ast.NewNumberLiteral(float64(i))
+		return ast.NewIntegerLiteral(float64(i))
 	} else if p.have(token.BIN_LITERAL) {
 		t := p.last()
 		i, err := strconv.ParseUint(t.String()[2:], 2, 64)
 		if err != nil {
 			panic(err)
 		}
-		return ast.NewNumberLiteral(float64(i))
+		return ast.NewIntegerLiteral(float64(i))
 	}
 	panic(fmt.Sprintf("unexpected token: %s\n", p.current().Kind().String()))
 }

@@ -12,6 +12,7 @@ type funcExp struct {
 	nparams int
 	params  []Node
 	fn      func(params []Node) float64
+	FloatType
 }
 
 func (f *funcExp) Print() {

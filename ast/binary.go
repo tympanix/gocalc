@@ -35,6 +35,13 @@ func (b *binaryExp) Print() {
 	debug.Outdent()
 }
 
+func (b *binaryExp) Type() Type {
+	if b.LHS().Type() == INTEGER && b.RHS().Type() == INTEGER {
+		return INTEGER
+	}
+	return FLOAT
+}
+
 func (b *binaryExp) LHS() Node {
 	return b.lhs
 }
