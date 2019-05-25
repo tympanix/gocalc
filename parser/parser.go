@@ -194,7 +194,7 @@ func (p *Parser) parseNumber() ast.Node {
 		}
 		return ast.NewNumberLiteral(float64(i))
 	}
-	panic(fmt.Sprintf("unexpected token: %s\n", p.current().String()))
+	panic(fmt.Sprintf("unexpected token: %s\n", p.current().Kind().String()))
 }
 
 func (p *Parser) parseConstant() ast.Node {
