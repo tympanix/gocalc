@@ -156,8 +156,8 @@ func NewPowOp(lhs Node, rhs Node) Node {
 	}
 }
 
-// NewLogicalAndOp returns the AST node for logical and (&) operator
-func NewLogicalAndOp(lhs Node, rhs Node) Node {
+// NewBitwiseAndOp returns the AST node for bitwise and (&) operator
+func NewBitwiseAndOp(lhs Node, rhs Node) Node {
 	return &binaryExp{
 		name: "&",
 		lhs:  lhs,
@@ -170,8 +170,8 @@ func NewLogicalAndOp(lhs Node, rhs Node) Node {
 	}
 }
 
-// NewLogicalOrOp returns the AST node for logical or (|) operator
-func NewLogicalOrOp(lhs Node, rhs Node) Node {
+// NewBitwiseOrOp returns the AST node for bitwise or (|) operator
+func NewBitwiseOrOp(lhs Node, rhs Node) Node {
 	return &binaryExp{
 		name: "|",
 		lhs:  lhs,

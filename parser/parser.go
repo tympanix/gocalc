@@ -122,7 +122,7 @@ func (p *Parser) parseLogicalOr() ast.Node {
 
 	for {
 		if p.have(token.LOR) {
-			lhs = ast.NewLogicalOrOp(lhs, p.parseLogicalAnd())
+			lhs = ast.NewBitwiseOrOp(lhs, p.parseLogicalAnd())
 		} else {
 			break
 		}
@@ -135,7 +135,7 @@ func (p *Parser) parseLogicalAnd() ast.Node {
 
 	for {
 		if p.have(token.LAND) {
-			lhs = ast.NewLogicalAndOp(lhs, p.parsePlus())
+			lhs = ast.NewBitwiseAndOp(lhs, p.parsePlus())
 		} else {
 			break
 		}
