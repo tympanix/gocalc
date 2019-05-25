@@ -48,17 +48,17 @@ func NewFromFile(path string) (*Scanner, error) {
 }
 
 // NewFromReader returns a new scanner from a io.Reader object
-func NewFromReader(r io.Reader) (*Scanner, error) {
+func NewFromReader(r io.Reader) *Scanner {
 	return &Scanner{
 		r: bufio.NewReader(r),
-	}, nil
+	}
 }
 
 // NewFromString returns a new scanner from a string
-func NewFromString(str string) (*Scanner, error) {
+func NewFromString(str string) *Scanner {
 	return &Scanner{
 		r: bufio.NewReader(strings.NewReader(str)),
-	}, nil
+	}
 }
 
 func (s *Scanner) next() rune {

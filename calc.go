@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/tympanix/gocalc/parser"
 	"github.com/tympanix/gocalc/scanner"
@@ -25,8 +24,7 @@ func main() {
 	flag.Parse()
 
 	if len(*program) > 0 {
-		r := strings.NewReader(*program)
-		s, err = scanner.NewFromReader(r)
+		s = scanner.NewFromString(*program)
 	}
 
 	if flag.NArg() > 0 {
