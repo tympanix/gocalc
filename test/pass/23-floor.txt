@@ -1,0 +1,2 @@
+floor(pi)
+// result: 3
