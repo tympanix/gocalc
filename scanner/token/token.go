@@ -31,7 +31,7 @@ type Kind int
 
 const (
 	EOF Kind = iota
-	IDENTIFIER
+	IDENT
 	INT_LITERAL
 	FLOAT_LITERAL
 	HEX_LITERAL
@@ -47,5 +47,6 @@ const (
 	XOR
 	LPAR
 	RPAR
+	NEG
 	COMMA
 )

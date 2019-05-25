@@ -174,7 +174,7 @@ func (s *Scanner) NextToken() *token.Token {
 			for s.hasLetter() || s.hasDigit() {
 				// noop
 			}
-			return s.newToken(token.IDENTIFIER)
+			return s.newToken(token.IDENT)
 		} else if s.hasString("//") {
 			s.clear()
 			for s.peekRune() != '\n' && s.peekRune() != 0 {

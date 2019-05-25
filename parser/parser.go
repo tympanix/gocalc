@@ -204,7 +204,7 @@ func (p *Parser) parseAtomic() ast.Node {
 		exp := p.parseExpression()
 		p.expect(token.RPAR)
 		return exp
-	} else if p.have(token.IDENTIFIER) {
+	} else if p.have(token.IDENT) {
 		if p.see(token.LPAR) {
 			return p.parseFunc()
 		}
