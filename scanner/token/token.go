@@ -44,6 +44,7 @@ const (
 	MOD
 	AND
 	OR
+	XOR
 	LPAR
 	RPAR
 	COMMA

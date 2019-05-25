@@ -184,6 +184,20 @@ func NewBitwiseOrOp(lhs Node, rhs Node) Node {
 	}
 }
 
+// NewBitwiseXorOp returns the AST node for bitwise or (|) operator
+func NewBitwiseXorOp(lhs Node, rhs Node) Node {
+	return &binaryExp{
+		name: "#",
+		lhs:  lhs,
+		rhs:  rhs,
+		a:    integerBinaryAnalyzer,
+		t:    integerBinaryTyper,
+		fn: func(a float64, b float64) float64 {
+			return float64(int64(a) ^ int64(b))
+		},
+	}
+}
+
 // NewModOp returns the AST node for mod (%) operator
 func NewModOp(lhs Node, rhs Node) Node {
 	return &binaryExp{

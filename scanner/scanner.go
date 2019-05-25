@@ -21,6 +21,7 @@ var (
 		'%': token.MOD,
 		'^': token.POW,
 		'&': token.AND,
+		'#': token.XOR,
 		'|': token.OR,
 		'(': token.LPAR,
 		')': token.RPAR,

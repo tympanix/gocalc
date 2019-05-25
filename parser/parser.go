@@ -118,11 +118,24 @@ func (p *Parser) parseExpression() ast.Node {
 }
 
 func (p *Parser) parseBitwiseOr() ast.Node {
-	lhs := p.parseBitwiseAnd()
+	lhs := p.parseBitwiseXor()
 
 	for {
 		if p.have(token.OR) {
-			lhs = ast.NewBitwiseOrOp(lhs, p.parseBitwiseAnd())
+			lhs = ast.NewBitwiseOrOp(lhs, p.parseBitwiseXor())
+		} else {
+			break
+		}
+	}
+	return lhs
+}
+
+func (p *Parser) parseBitwiseXor() ast.Node {
+	lhs := p.parseBitwiseAnd()
+
+	for {
+		if p.have(token.XOR) {
+			lhs = ast.NewBitwiseXorOp(lhs, p.parseBitwiseAnd())
 		} else {
 			break
 		}
