@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"log"
+	"fmt"
 	"math"
 
 	"github.com/tympanix/gocalc/debug"
@@ -24,10 +24,11 @@ func (f *funcExp) Print() {
 	debug.Outdent()
 }
 
-func (f *funcExp) Analyze() {
+func (f *funcExp) Analyze() error {
 	if len(f.params) != f.nparams {
-		log.Fatalf("Expected %d parameters in %s, got %d\n", f.nparams, f.name, len(f.params))
+		return fmt.Errorf("expected %d parameters in %s, got %d", f.nparams, f.name, len(f.params))
 	}
+	return nil
 }
 
 // Calc returns the result of the function

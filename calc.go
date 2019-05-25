@@ -74,7 +74,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	n.Analyze()
+	if err := n.Analyze(); err != nil {
+		log.Fatal(err)
+	}
 
 	if *parsing {
 		n.Print()
@@ -125,6 +127,11 @@ func term() {
 		p, err := parser.New(s).Parse()
 
 		if err != nil {
+			t.Write([]byte(fmt.Sprintln(err)))
+			continue
+		}
+
+		if err := p.Analyze(); err != nil {
 			t.Write([]byte(fmt.Sprintln(err)))
 			continue
 		}

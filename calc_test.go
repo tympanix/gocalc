@@ -77,7 +77,10 @@ func TestPass(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			n.Analyze()
+			if err := n.Analyze(); err != nil {
+				t.Fatal(err)
+			}
+
 			r := n.Calc()
 
 			if r > res+margin || r < res-margin {
@@ -94,5 +97,8 @@ func TestDebug(t *testing.T) {
 	s := scanner.NewFromString("2+2")
 
 	p, _ := parser.New(s).Parse()
-	p.Analyze()
+
+	if err := p.Analyze(); err != nil {
+		t.Fatal(err)
+	}
 }

@@ -27,7 +27,7 @@ func (f FloatType) Type() Type {
 
 // Node represents a node in the abstract syntax tree
 type Node interface {
-	Analyze()
+	Analyze() error
 	Type() Type
 	Calc() float64
 	Print()
@@ -37,4 +37,6 @@ type Node interface {
 type NopAnalyzer struct{}
 
 // Analyze performs no operation at all
-func (n NopAnalyzer) Analyze() {}
+func (n NopAnalyzer) Analyze() error {
+	return nil
+}

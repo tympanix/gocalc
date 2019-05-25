@@ -22,9 +22,14 @@ type binaryExp struct {
 }
 
 // Analyse performs analysis on the right- and lef-hand side
-func (b *binaryExp) Analyze() {
-	b.LHS().Analyze()
-	b.RHS().Analyze()
+func (b *binaryExp) Analyze() error {
+	if err := b.LHS().Analyze(); err != nil {
+		return err
+	}
+	if err := b.RHS().Analyze(); err != nil {
+		return err
+	}
+	return nil
 }
 
 // Print prints the binary expression
@@ -147,9 +152,12 @@ func (p *LogicalAndOp) Calc() float64 {
 }
 
 // Analyze makes sure both lhs and rhs are integer values
-func (p *LogicalAndOp) Analyze() {
-	p.binaryExp.Analyze()
-	if p.LHS().Type() != INTEGER || p.RHS().Type() != INTEGER {
-		panic(fmt.Sprintf("illegal operands: %s", p.op))
+func (p *LogicalAndOp) Analyze() error {
+	if err := p.binaryExp.Analyze(); err != nil {
+		return err
 	}
+	if p.LHS().Type() != INTEGER || p.RHS().Type() != INTEGER {
+		return fmt.Errorf("illegal operands: %s", p.op)
+	}
+	return nil
 }
