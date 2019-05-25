@@ -114,7 +114,20 @@ func (p *Parser) Parse() (exp ast.Node, err error) {
 }
 
 func (p *Parser) parseExpression() ast.Node {
-	return p.parsePlus()
+	return p.parseLogicalAnd()
+}
+
+func (p *Parser) parseLogicalAnd() ast.Node {
+	lhs := p.parsePlus()
+
+	for {
+		if p.have(token.LAND) {
+			lhs = ast.NewLogicalAndOp(lhs, p.parsePlus())
+		} else {
+			break
+		}
+	}
+	return lhs
 }
 
 func (p *Parser) parsePlus() ast.Node {

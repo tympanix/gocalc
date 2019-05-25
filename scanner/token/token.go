@@ -41,6 +41,7 @@ const (
 	MUL
 	DIV
 	POW
+	LAND
 	LPAR
 	RPAR
 	COMMA

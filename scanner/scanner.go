@@ -19,6 +19,7 @@ var (
 		'*': token.MUL,
 		'/': token.DIV,
 		'^': token.POW,
+		'&': token.LAND,
 		'(': token.LPAR,
 		')': token.RPAR,
 		',': token.COMMA,

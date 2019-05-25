@@ -1,6 +1,7 @@
 package ast
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/tympanix/gocalc/debug"
@@ -110,6 +111,11 @@ func (p *DivOp) Calc() float64 {
 	return p.LHS().Calc() / p.RHS().Calc()
 }
 
+// Type returns float since result can be real number
+func (p *DivOp) Type() Type {
+	return FLOAT
+}
+
 // NewPowOp returns a new AST node for the pow operator
 func NewPowOp(lhs Node, rhs Node) *PowOp {
 	return &PowOp{newBinaryExp("^", lhs, rhs)}
@@ -123,4 +129,27 @@ type PowOp struct {
 // Calc returns the multiplication of the two operands
 func (p *PowOp) Calc() float64 {
 	return math.Pow(p.LHS().Calc(), p.RHS().Calc())
+}
+
+// NewLogicalAndOp returns the AST node for logical and (&) operator
+func NewLogicalAndOp(lhs Node, rhs Node) Node {
+	return &LogicalAndOp{newBinaryExp("&", lhs, rhs)}
+}
+
+// LogicalAndOp represents an multiplication of integers
+type LogicalAndOp struct {
+	*binaryExp
+}
+
+// Calc returns the multiplication of the two operands
+func (p *LogicalAndOp) Calc() float64 {
+	return float64(int64(p.LHS().Calc()) & int64(p.RHS().Calc()))
+}
+
+// Analyze makes sure both lhs and rhs are integer values
+func (p *LogicalAndOp) Analyze() {
+	p.binaryExp.Analyze()
+	if p.LHS().Type() != INTEGER || p.RHS().Type() != INTEGER {
+		panic(fmt.Sprintf("illegal operands: %s", p.op))
+	}
 }
