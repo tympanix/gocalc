@@ -86,7 +86,7 @@ func TestPass(t *testing.T) {
 }
 
 func TestDebug(t *testing.T) {
-	s, _ := scanner.NewFromString("2+2")
+	s := scanner.NewFromString("2+2")
 
 	p := parser.New(s).Parse()
 	p.Analyze()

@@ -24,7 +24,7 @@ func (i *NumberLiteral) Calc() float64 {
 
 // Print displays the integer literal on the screen
 func (i *NumberLiteral) Print() {
-	debug.Println(i)
+	debug.Println(i.n)
 }
 
 type constantExp struct {

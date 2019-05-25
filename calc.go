@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/tympanix/gocalc/parser"
 	"github.com/tympanix/gocalc/scanner"
@@ -13,7 +15,8 @@ import (
 var (
 	verbose  = flag.Bool("v", false, "verbose")
 	scanning = flag.Bool("s", false, "scanning")
-	program  = flag.String("p", "", "program")
+	parsing  = flag.Bool("p", false, "parsing")
+	input    = flag.String("i", "", "input")
 )
 
 func main() {
@@ -23,17 +26,29 @@ func main() {
 
 	flag.Parse()
 
-	if len(*program) > 0 {
-		s = scanner.NewFromString(*program)
+	if len(*input) > 0 && flag.NArg() > 0 {
+		log.Fatal("too many arguments")
+	}
+
+	if len(*input) > 0 {
+		s, err = scanner.NewFromFile(*input)
 	}
 
 	if flag.NArg() > 0 {
-		s, err = scanner.NewFromFile(flag.Arg(0))
+		s = scanner.NewFromString(flag.Arg(0))
 	}
 
 	if s == nil {
-		log.Fatalln("Missing program arguments")
+		stat, _ := os.Stdin.Stat()
+		if (stat.Mode() & os.ModeCharDevice) == 0 {
+			s = scanner.NewFromReader(bufio.NewReader(os.Stdin))
+		}
 	}
+
+	if s == nil {
+		log.Fatal("too few arguments")
+	}
+
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -52,9 +67,11 @@ func main() {
 
 	n.Analyze()
 
+	if *parsing {
+		n.Print()
+		os.Exit(0)
+	}
+
 	fmt.Println(n.Calc())
 
-	if *verbose {
-		n.Print()
-	}
 }
