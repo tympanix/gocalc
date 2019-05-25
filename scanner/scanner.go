@@ -3,8 +3,8 @@ package scanner
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
-	"log"
 	"os"
 	"strings"
 	"unicode"
@@ -181,7 +181,7 @@ func (s *Scanner) NextToken() *token.Token {
 		} else if s.has(0) {
 			return s.newToken(token.EOF)
 		} else {
-			log.Fatalf("Unknown token %c\n", s.next())
+			panic(fmt.Sprintf("unknown token: %c\n", s.next()))
 		}
 	}
 }
