@@ -24,7 +24,7 @@ var integerBinaryAnalyzer = func(b *binaryExp, lhs Node, rhs Node) error {
 		return err
 	}
 	if lhs.Type() != INTEGER || rhs.Type() != INTEGER {
-		return fmt.Errorf("illegal operands: %s", b.name)
+		return fmt.Errorf("illegal operands for: %s", b.name)
 	}
 	return nil
 
