@@ -114,15 +114,15 @@ func (p *Parser) Parse() (exp ast.Node, err error) {
 }
 
 func (p *Parser) parseExpression() ast.Node {
-	return p.parseLogicalOr()
+	return p.parseBitwiseOr()
 }
 
-func (p *Parser) parseLogicalOr() ast.Node {
-	lhs := p.parseLogicalAnd()
+func (p *Parser) parseBitwiseOr() ast.Node {
+	lhs := p.parseBitwiseAnd()
 
 	for {
 		if p.have(token.OR) {
-			lhs = ast.NewBitwiseOrOp(lhs, p.parseLogicalAnd())
+			lhs = ast.NewBitwiseOrOp(lhs, p.parseBitwiseAnd())
 		} else {
 			break
 		}
@@ -130,7 +130,7 @@ func (p *Parser) parseLogicalOr() ast.Node {
 	return lhs
 }
 
-func (p *Parser) parseLogicalAnd() ast.Node {
+func (p *Parser) parseBitwiseAnd() ast.Node {
 	lhs := p.parsePlus()
 
 	for {
