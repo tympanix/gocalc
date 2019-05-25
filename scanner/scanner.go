@@ -170,6 +170,8 @@ func (s *Scanner) NextToken() *token.Token {
 				return s.scanFloatToken()
 			}
 			return s.scanIntToken()
+		} else if s.has('.') {
+			return s.scanFloatToken()
 		} else if s.hasLetter() {
 			for s.hasLetter() || s.hasDigit() {
 				// noop
