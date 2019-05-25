@@ -149,9 +149,7 @@ func (p *Parser) parsePow() ast.Node {
 }
 
 func (p *Parser) parseAtomic() ast.Node {
-	if p.see(token.NUMBER) {
-		return p.parseNumber()
-	} else if p.have(token.MINUS) {
+	if p.have(token.MINUS) {
 		return ast.NewNegOp(p.parseAtomic())
 	} else if p.have(token.LPAR) {
 		exp := p.parseExpression()
@@ -162,19 +160,36 @@ func (p *Parser) parseAtomic() ast.Node {
 			return p.parseFunc()
 		}
 		return p.parseConstant()
+	} else {
+		return p.parseNumber()
 	}
-	log.Panicf("unexpected token: %s\n", p.current().String())
-	return nil
 }
 
 func (p *Parser) parseNumber() ast.Node {
-	p.expect(token.NUMBER)
-	t := p.last()
-	i, err := strconv.ParseFloat(t.String(), 64)
-	if err != nil {
-		log.Fatal(err)
+	if p.have(token.DEC_LITERAL) {
+		t := p.last()
+		i, err := strconv.ParseFloat(t.String(), 64)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return ast.NewNumberLiteral(i)
+	} else if p.have(token.HEX_LITERAL) {
+		t := p.last()
+		i, err := strconv.ParseUint(t.String()[2:], 16, 64)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return ast.NewNumberLiteral(float64(i))
+	} else if p.have(token.BIN_LITERAL) {
+		t := p.last()
+		i, err := strconv.ParseUint(t.String()[2:], 2, 64)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return ast.NewNumberLiteral(float64(i))
 	}
-	return ast.NewNumberLiteral(i)
+	log.Panicf("unexpected token: %s\n", p.current().String())
+	return nil
 }
 
 func (p *Parser) parseConstant() ast.Node {

@@ -70,8 +70,54 @@ func (s *Scanner) next() rune {
 	return r
 }
 
+func (s *Scanner) nextN(n int) {
+	for i := 0; i < n; i++ {
+		s.next()
+	}
+}
+
+func (s *Scanner) has(r rune) bool {
+	if s.peekRune() == r {
+		s.next()
+		return true
+	}
+	return false
+}
+
+func (s *Scanner) clear() {
+	s.buf.Reset()
+}
+
+func (s *Scanner) hasString(str string) bool {
+	if s.peek(len(str)) == str {
+		s.nextN(len(str))
+		return true
+	}
+	return false
+}
+
+func (s *Scanner) hasDigit() bool {
+	if unicode.IsNumber(s.peekRune()) {
+		s.next()
+		return true
+	}
+	return false
+}
+
+func (s *Scanner) hasLetter() bool {
+	if unicode.IsLetter(s.peekRune()) {
+		s.next()
+		return true
+	}
+	return false
+}
+
 func (s *Scanner) discard() {
 	s.r.Discard(1)
+}
+
+func (s *Scanner) rune() rune {
+	return rune(s.buf.Bytes()[0])
 }
 
 func (s *Scanner) peekRune() rune {
@@ -107,38 +153,72 @@ func (s *Scanner) NextToken() *token.Token {
 			s.discard()
 		}
 
-		r := s.next()
-
-		if unicode.IsNumber(r) || r == '.' {
-			hasDot := r == '.'
-			for {
-				if unicode.IsNumber(s.peekRune()) {
-					r = s.next()
-					continue
-				}
-				if s.peekRune() == '.' && !hasDot {
-					r = s.next()
-					hasDot = true
-					continue
-				}
-				break
+		if s.has('0') {
+			if s.has('.') {
+				return s.scanIntegerToken()
+			} else if s.has('x') {
+				return s.scanHexToken()
+			} else if s.has('b') {
+				return s.scanBinToken()
 			}
-			return s.newToken(token.NUMBER)
-		} else if unicode.IsLetter(r) {
-			for unicode.IsNumber(s.peekRune()) || unicode.IsLetter(s.peekRune()) {
-				r = s.next()
+		} else if s.hasDigit() {
+			s.scanInteger()
+			s.has('.')
+			return s.scanIntegerToken()
+		} else if s.hasLetter() {
+			for s.hasLetter() || s.hasDigit() {
+				// noop
 			}
 			return s.newToken(token.IDENTIFIER)
-		} else if r == '/' && s.peekRune() == '/' {
+		} else if s.hasString("//") {
+			s.clear()
 			for s.peekRune() != '\n' && s.peekRune() != 0 {
-				s.next()
+				s.discard()
 			}
-		} else if t, ok := symbols[r]; ok {
+		} else if t, ok := symbols[s.peekRune()]; ok {
+			s.next()
 			return s.newToken(t)
-		} else if r == 0 {
+		} else if s.has(0) {
 			return s.newToken(token.EOF)
 		} else {
-			log.Fatalf("Unknown token %c\n", r)
+			log.Fatalf("Unknown token %c\n", s.next())
 		}
 	}
+}
+
+func (s *Scanner) scanInteger() {
+	for {
+		if !s.hasDigit() {
+			break
+		}
+	}
+}
+
+func (s *Scanner) scanIntegerToken() *token.Token {
+	s.scanInteger()
+	return s.newToken(token.DEC_LITERAL)
+}
+
+func (s *Scanner) scanHexToken() *token.Token {
+	for {
+		if s.hasDigit() {
+			continue
+		}
+		if s.peekRune() >= 'a' && s.peekRune() <= 'f' {
+			s.next()
+			continue
+		}
+		if s.peekRune() >= 'A' && s.peekRune() <= 'F' {
+			s.next()
+			continue
+		}
+		return s.newToken(token.HEX_LITERAL)
+	}
+}
+
+func (s *Scanner) scanBinToken() *token.Token {
+	for s.has('0') || s.has('1') {
+		// noop
+	}
+	return s.newToken(token.BIN_LITERAL)
 }

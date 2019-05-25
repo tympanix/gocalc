@@ -32,7 +32,9 @@ type Kind int
 const (
 	EOF Kind = iota
 	IDENTIFIER
-	NUMBER
+	DEC_LITERAL
+	HEX_LITERAL
+	BIN_LITERAL
 	PLUS
 	MINUS
 	MUL
