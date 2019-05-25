@@ -71,7 +71,12 @@ func TestPass(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			n := parser.New(s).Parse()
+			n, err := parser.New(s).Parse()
+
+			if err != nil {
+				t.Fatal(err)
+			}
+
 			n.Analyze()
 			r := n.Calc()
 

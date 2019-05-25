@@ -68,7 +68,11 @@ func main() {
 		}
 	}
 
-	n := parser.New(s).Parse()
+	n, err := parser.New(s).Parse()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	n.Analyze()
 
@@ -118,7 +122,12 @@ func term() {
 
 		s := scanner.NewFromString(text)
 
-		p := parser.New(s).Parse()
+		p, err := parser.New(s).Parse()
+
+		if err != nil {
+			t.Write([]byte(fmt.Sprintln(err)))
+			continue
+		}
 
 		t.Write([]byte(fmt.Sprintln(p.Calc())))
 	}

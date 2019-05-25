@@ -1,7 +1,8 @@
 package parser
 
 import (
-	"log"
+	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/tympanix/gocalc/ast"
@@ -89,7 +90,7 @@ func (p *Parser) see(t token.Kind) bool {
 
 func (p *Parser) expect(t token.Kind) *token.Token {
 	if !p.have(t) {
-		log.Fatalf("Expected token: %s\n", t.String())
+		panic(fmt.Sprintf("expected token: %s\n", t.String()))
 	}
 	return p.last()
 }
@@ -99,10 +100,15 @@ func (p *Parser) last() *token.Token {
 }
 
 // Parse parses the program
-func (p *Parser) Parse() ast.Node {
-	exp := p.parseExpression()
+func (p *Parser) Parse() (exp ast.Node, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = errors.New(fmt.Sprint(r))
+		}
+	}()
+	exp = p.parseExpression()
 	p.expect(token.EOF)
-	return exp
+	return exp, nil
 }
 
 func (p *Parser) parseExpression() ast.Node {
@@ -170,26 +176,25 @@ func (p *Parser) parseNumber() ast.Node {
 		t := p.last()
 		i, err := strconv.ParseFloat(t.String(), 64)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 		return ast.NewNumberLiteral(i)
 	} else if p.have(token.HEX_LITERAL) {
 		t := p.last()
 		i, err := strconv.ParseUint(t.String()[2:], 16, 64)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 		return ast.NewNumberLiteral(float64(i))
 	} else if p.have(token.BIN_LITERAL) {
 		t := p.last()
 		i, err := strconv.ParseUint(t.String()[2:], 2, 64)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 		return ast.NewNumberLiteral(float64(i))
 	}
-	log.Panicf("unexpected token: %s\n", p.current().String())
-	return nil
+	panic(fmt.Sprintf("unexpected token: %s\n", p.current().String()))
 }
 
 func (p *Parser) parseConstant() ast.Node {
@@ -197,8 +202,7 @@ func (p *Parser) parseConstant() ast.Node {
 	if c, ok := constants[t.String()]; ok {
 		return c()
 	}
-	log.Fatalf("unknown constant: %s\n", t.String())
-	return nil
+	panic(fmt.Sprintf("undefined constant: %s\n", t.String()))
 }
 
 func (p *Parser) parseFunc() ast.Node {
@@ -219,6 +223,5 @@ func (p *Parser) parseFunc() ast.Node {
 	if f, ok := functions[fn.String()]; ok {
 		return f(params)
 	}
-	log.Fatalf("Unknown function: %s\n", fn.String())
-	return nil
+	panic(fmt.Sprintf("undefined function: %s\n", fn.String()))
 }
