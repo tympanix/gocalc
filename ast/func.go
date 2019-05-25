@@ -213,3 +213,27 @@ func NewRoundOp(params []Node) Node {
 		},
 	}
 }
+
+// NewFloorOp returns the AST node for the round function
+func NewFloorOp(params []Node) Node {
+	return &funcExp{
+		name:    "floor",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Floor(params[0].Calc())
+		},
+	}
+}
+
+// NewCeilOp returns the AST node for the round function
+func NewCeilOp(params []Node) Node {
+	return &funcExp{
+		name:    "ceil",
+		nparams: 1,
+		params:  params,
+		fn: func(params []Node) float64 {
+			return math.Ceil(params[0].Calc())
+		},
+	}
+}
