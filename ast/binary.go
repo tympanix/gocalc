@@ -43,6 +43,10 @@ var floatBinaryTyper = func(lhs Node, rhs Node) Type {
 	return FLOAT
 }
 
+var integerBinaryTyper = func(lhs Node, rhs Node) Type {
+	return INTEGER
+}
+
 type binaryExp struct {
 	name string
 	lhs  Node
@@ -159,9 +163,37 @@ func NewLogicalAndOp(lhs Node, rhs Node) Node {
 		lhs:  lhs,
 		rhs:  rhs,
 		a:    integerBinaryAnalyzer,
-		t:    defaultBinaryTyper,
+		t:    integerBinaryTyper,
 		fn: func(a float64, b float64) float64 {
 			return float64(int64(a) & int64(b))
+		},
+	}
+}
+
+// NewLogicalOrOp returns the AST node for logical or (|) operator
+func NewLogicalOrOp(lhs Node, rhs Node) Node {
+	return &binaryExp{
+		name: "|",
+		lhs:  lhs,
+		rhs:  rhs,
+		a:    integerBinaryAnalyzer,
+		t:    integerBinaryTyper,
+		fn: func(a float64, b float64) float64 {
+			return float64(int64(a) | int64(b))
+		},
+	}
+}
+
+// NewModOp returns the AST node for mod (%) operator
+func NewModOp(lhs Node, rhs Node) Node {
+	return &binaryExp{
+		name: "%",
+		lhs:  lhs,
+		rhs:  rhs,
+		a:    integerBinaryAnalyzer,
+		t:    integerBinaryTyper,
+		fn: func(a float64, b float64) float64 {
+			return float64(int64(a) % int64(b))
 		},
 	}
 }

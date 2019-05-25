@@ -114,7 +114,20 @@ func (p *Parser) Parse() (exp ast.Node, err error) {
 }
 
 func (p *Parser) parseExpression() ast.Node {
-	return p.parseLogicalAnd()
+	return p.parseLogicalOr()
+}
+
+func (p *Parser) parseLogicalOr() ast.Node {
+	lhs := p.parseLogicalAnd()
+
+	for {
+		if p.have(token.LOR) {
+			lhs = ast.NewLogicalOrOp(lhs, p.parseLogicalAnd())
+		} else {
+			break
+		}
+	}
+	return lhs
 }
 
 func (p *Parser) parseLogicalAnd() ast.Node {
@@ -153,6 +166,8 @@ func (p *Parser) parseMul() ast.Node {
 			lhs = ast.NewMulOp(lhs, p.parsePow())
 		} else if p.have(token.DIV) {
 			lhs = ast.NewDivOp(lhs, p.parsePow())
+		} else if p.have(token.MOD) {
+			lhs = ast.NewModOp(lhs, p.parsePow())
 		} else {
 			break
 		}
