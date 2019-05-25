@@ -4,12 +4,16 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/tympanix/gocalc/parser"
 	"github.com/tympanix/gocalc/scanner"
 	"github.com/tympanix/gocalc/scanner/token"
+
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 var (
@@ -46,7 +50,8 @@ func main() {
 	}
 
 	if s == nil {
-		log.Fatal("too few arguments")
+		term()
+		os.Exit(0)
 	}
 
 	if err != nil {
@@ -74,4 +79,47 @@ func main() {
 
 	fmt.Println(n.Calc())
 
+}
+
+func term() {
+	oldState, err := terminal.MakeRaw(0)
+	if err != nil {
+		panic(err)
+	}
+	defer terminal.Restore(0, oldState)
+
+	t := terminal.NewTerminal(os.Stdin, "> ")
+	t.AutoCompleteCallback = func(line string, pos int, key rune) (newline string, newPos int, ok bool) {
+		if key == '\x03' {
+			// Ctrl+C
+			os.Exit(0)
+		}
+		return "", 0, false
+	}
+
+	for {
+		text, err := t.ReadLine()
+		if err != nil {
+			if err == io.EOF {
+				return
+			}
+			panic(err)
+		}
+
+		text = strings.TrimSpace(text)
+
+		if len(text) == 0 {
+			continue
+		}
+
+		if text == "exit" || text == "quit" {
+			return
+		}
+
+		s := scanner.NewFromString(text)
+
+		p := parser.New(s).Parse()
+
+		t.Write([]byte(fmt.Sprintln(p.Calc())))
+	}
 }
