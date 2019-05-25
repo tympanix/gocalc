@@ -7,18 +7,18 @@ import (
 	"github.com/tympanix/gocalc/debug"
 )
 
-func newBinaryExp(op string, lhs Node, rhs Node) *binaryExp {
+func newBinaryExp(name string, lhs Node, rhs Node) *binaryExp {
 	return &binaryExp{
-		op:  op,
-		lhs: lhs,
-		rhs: rhs,
+		name: name,
+		lhs:  lhs,
+		rhs:  rhs,
 	}
 }
 
 type binaryExp struct {
-	op  string
-	lhs Node
-	rhs Node
+	name string
+	lhs  Node
+	rhs  Node
 }
 
 // Analyse performs analysis on the right- and lef-hand side
@@ -34,7 +34,7 @@ func (b *binaryExp) Analyze() error {
 
 // Print prints the binary expression
 func (b *binaryExp) Print() {
-	debug.Println(b.op)
+	debug.Println(b.name)
 	debug.Indent()
 	b.LHS().Print()
 	b.RHS().Print()
@@ -157,7 +157,7 @@ func (p *LogicalAndOp) Analyze() error {
 		return err
 	}
 	if p.LHS().Type() != INTEGER || p.RHS().Type() != INTEGER {
-		return fmt.Errorf("illegal operands: %s", p.op)
+		return fmt.Errorf("illegal operands: %s", p.name)
 	}
 	return nil
 }
