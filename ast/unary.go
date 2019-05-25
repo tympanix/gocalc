@@ -5,7 +5,7 @@ import "github.com/tympanix/gocalc/debug"
 type unaryExp struct {
 	name  string
 	param Node
-	fn    func(Node) float64
+	fn    func(float64) float64
 	NopAnalyzer
 }
 
@@ -17,7 +17,7 @@ func (u *unaryExp) Print() {
 }
 
 func (u *unaryExp) Calc() float64 {
-	return u.fn(u.param)
+	return u.fn(u.param.Calc())
 }
 
 func (u *unaryExp) Type() Type {
@@ -29,8 +29,8 @@ func NewNegOp(param Node) Node {
 	return &unaryExp{
 		name:  "-",
 		param: param,
-		fn: func(param Node) float64 {
-			return -param.Calc()
+		fn: func(a float64) float64 {
+			return -a
 		},
 	}
 }
