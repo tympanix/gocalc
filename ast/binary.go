@@ -7,43 +7,43 @@ import (
 	"github.com/tympanix/gocalc/debug"
 )
 
-type binaryAnalyzer func(*binaryExp, Node, Node) error
+type binaryAnalyzer func(*binaryExp) error
 
-var defaultBinaryAnalyzer = func(b *binaryExp, lhs Node, rhs Node) error {
-	if err := lhs.Analyze(); err != nil {
+var defaultBinaryAnalyzer = func(b *binaryExp) error {
+	if err := b.LHS().Analyze(); err != nil {
 		return err
 	}
-	if err := rhs.Analyze(); err != nil {
+	if err := b.RHS().Analyze(); err != nil {
 		return err
 	}
 	return nil
 }
 
-var integerBinaryAnalyzer = func(b *binaryExp, lhs Node, rhs Node) error {
-	if err := defaultBinaryAnalyzer(b, lhs, rhs); err != nil {
+var integerBinaryAnalyzer = func(b *binaryExp) error {
+	if err := defaultBinaryAnalyzer(b); err != nil {
 		return err
 	}
-	if lhs.Type() != INTEGER || rhs.Type() != INTEGER {
+	if b.LHS().Type() != INTEGER || b.RHS().Type() != INTEGER {
 		return fmt.Errorf("illegal operands for: %s", b.name)
 	}
 	return nil
 
 }
 
-type binaryTyper func(Node, Node) Type
+type binaryTyper func(b *binaryExp) Type
 
-var defaultBinaryTyper = func(lhs Node, rhs Node) Type {
-	if lhs.Type() == INTEGER && rhs.Type() == INTEGER {
+var defaultBinaryTyper = func(b *binaryExp) Type {
+	if b.LHS().Type() == INTEGER && b.RHS().Type() == INTEGER {
 		return INTEGER
 	}
 	return FLOAT
 }
 
-var floatBinaryTyper = func(lhs Node, rhs Node) Type {
+var floatBinaryTyper = func(b *binaryExp) Type {
 	return FLOAT
 }
 
-var integerBinaryTyper = func(lhs Node, rhs Node) Type {
+var integerBinaryTyper = func(b *binaryExp) Type {
 	return INTEGER
 }
 
@@ -58,7 +58,7 @@ type binaryExp struct {
 
 // Analyse performs analysis on the right- and lef-hand side
 func (b *binaryExp) Analyze() error {
-	return b.a(b, b.LHS(), b.RHS())
+	return b.a(b)
 }
 
 // Print prints the binary expression
@@ -71,7 +71,7 @@ func (b *binaryExp) Print() {
 }
 
 func (b *binaryExp) Type() Type {
-	return b.t(b.LHS(), b.RHS())
+	return b.t(b)
 }
 
 func (b *binaryExp) Calc() float64 {
