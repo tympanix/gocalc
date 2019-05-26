@@ -174,12 +174,12 @@ func (s *Scanner) NextToken() *token.Token {
 			} else if s.has('b') {
 				return s.scanBinToken()
 			} else if s.hasDigit() {
-				s.scanInteger()
+				s.scanDigits()
 				panic(fmt.Sprintf("unknown token: %s\n", s.get()))
 			}
 			return s.newToken(token.INT_LITERAL)
 		} else if s.hasDigit() {
-			s.scanInteger()
+			s.scanDigits()
 			if s.has('.') {
 				if t := s.scanSciToken(); t != nil {
 					return t
@@ -216,7 +216,7 @@ func (s *Scanner) NextToken() *token.Token {
 	}
 }
 
-func (s *Scanner) scanInteger() {
+func (s *Scanner) scanDigits() {
 	for {
 		if !s.hasDigit() {
 			break
@@ -225,12 +225,12 @@ func (s *Scanner) scanInteger() {
 }
 
 func (s *Scanner) scanFloatToken() *token.Token {
-	s.scanInteger()
+	s.scanDigits()
 	return s.newToken(token.FLOAT_LITERAL)
 }
 
 func (s *Scanner) scanIntToken() *token.Token {
-	s.scanInteger()
+	s.scanDigits()
 	return s.newToken(token.INT_LITERAL)
 }
 
@@ -259,7 +259,7 @@ func (s *Scanner) scanBinToken() *token.Token {
 }
 
 func (s *Scanner) scanSciToken() *token.Token {
-	s.scanInteger()
+	s.scanDigits()
 	if s.has('e') || s.has('E') {
 		if s.has('-') || s.has('+') {
 			return s.scanFloatToken()
