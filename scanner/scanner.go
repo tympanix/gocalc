@@ -149,6 +149,10 @@ func (s *Scanner) newToken(kind token.Kind) *token.Token {
 	return token.New(kind, s.get())
 }
 
+func (s *Scanner) unexpectedToken() {
+	panic(fmt.Sprintf("unknown token: %s\n", s.get()))
+}
+
 // NextToken retrieves the next token from the scanner
 func (s *Scanner) NextToken() *token.Token {
 	for {
@@ -158,19 +162,38 @@ func (s *Scanner) NextToken() *token.Token {
 
 		if s.has('0') {
 			if s.has('.') {
+				if !s.hasDigit() {
+					s.unexpectedToken()
+				}
+				if t := s.scanSciToken(); t != nil {
+					return t
+				}
 				return s.scanFloatToken()
 			} else if s.has('x') {
 				return s.scanHexToken()
 			} else if s.has('b') {
 				return s.scanBinToken()
+			} else if s.hasDigit() {
+				s.scanInteger()
+				panic(fmt.Sprintf("unknown token: %s\n", s.get()))
 			}
+			return s.newToken(token.INT_LITERAL)
 		} else if s.hasDigit() {
 			s.scanInteger()
 			if s.has('.') {
+				if t := s.scanSciToken(); t != nil {
+					return t
+				}
 				return s.scanFloatToken()
+			}
+			if t := s.scanSciToken(); t != nil {
+				return t
 			}
 			return s.scanIntToken()
 		} else if s.has('.') {
+			if t := s.scanSciToken(); t != nil {
+				return t
+			}
 			return s.scanFloatToken()
 		} else if s.hasLetter() {
 			for s.hasLetter() || s.hasDigit() {
@@ -233,4 +256,15 @@ func (s *Scanner) scanBinToken() *token.Token {
 		// noop
 	}
 	return s.newToken(token.BIN_LITERAL)
+}
+
+func (s *Scanner) scanSciToken() *token.Token {
+	s.scanInteger()
+	if s.has('e') || s.has('E') {
+		if s.has('-') || s.has('+') {
+			return s.scanFloatToken()
+		}
+		return s.scanFloatToken()
+	}
+	return nil
 }
